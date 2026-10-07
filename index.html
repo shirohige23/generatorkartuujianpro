@@ -1011,8 +1011,6 @@
       logoutUser();
     }
 
-    var URL_WEB_APP_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycby8cZzQ_i-AxbRAdLtxxTAlXHnhmeLq7bVBqjqNjU8/exec";
-
     function aksiSubmitLogin() {
       var user = document.getElementById('login-user').value.trim();
       var pass = document.getElementById('login-pass').value.trim();
@@ -1030,12 +1028,10 @@
       btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Memverifikasi ke Spreadsheet...';
       alertBox.classList.add('d-none');
 
-      // Penanganan respon global JSONP
       window.handleLoginResponse = function(res) {
         btn.disabled = false;
         btn.innerHTML = '<i class="bi bi-box-arrow-in-right me-1"></i> Verifikasi & Masuk Studio';
 
-        // Bersihkan script tag sementara
         var oldScript = document.getElementById('jsonp-login-script');
         if (oldScript) oldScript.remove();
 
@@ -1059,7 +1055,6 @@
         }
       };
 
-      // Buat pemanggilan JSONP lintas domain
       var oldScript = document.getElementById('jsonp-login-script');
       if (oldScript) oldScript.remove();
 
@@ -1074,67 +1069,11 @@
       script.onerror = function() {
         btn.disabled = false;
         btn.innerHTML = '<i class="bi bi-box-arrow-in-right me-1"></i> Verifikasi & Masuk Studio';
-        alertBox.textContent = 'Gagal terhubung ke Google Apps Script. Pastikan akses deployment disetel ke "Anyone".';
+        alertBox.textContent = 'Gagal terhubung ke Google Spreadsheet. Pastikan koneksi internet stabil.';
         alertBox.classList.remove('d-none');
       };
 
       document.body.appendChild(script);
-    }
-
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Memverifikasi ke Spreadsheet...';
-      alertBox.classList.add('d-none');
-
-      if (typeof google !== 'undefined' && google.script && google.script.run) {
-        google.script.run
-          .withSuccessHandler(tanganiHasilLogin)
-          .withFailureHandler(function(err) {
-            btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-box-arrow-in-right me-1"></i> Verifikasi & Masuk Studio';
-            alertBox.textContent = 'Error koneksi server: ' + (err.message || err.toString());
-            alertBox.classList.remove('d-none');
-          })
-          .checkUserLogin(user, pass, key);
-      } else {
-        var queryUrl = URL_WEB_APP_APPS_SCRIPT + '?action=login' +
-          '&user=' + encodeURIComponent(user) +
-          '&pass=' + encodeURIComponent(pass) +
-          '&key='  + encodeURIComponent(key);
-
-        fetch(queryUrl)
-          .then(function(res) { return res.json(); })
-          .then(function(res) { tanganiHasilLogin(res); })
-          .catch(function(err) {
-            btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-box-arrow-in-right me-1"></i> Verifikasi & Masuk Studio';
-            alertBox.textContent = 'Gagal menghubungi database spreadsheet: ' + err.message;
-            alertBox.classList.remove('d-none');
-          });
-      }
-
-      function tanganiHasilLogin(res) {
-        btn.disabled = false;
-        btn.innerHTML = '<i class="bi bi-box-arrow-in-right me-1"></i> Verifikasi & Masuk Studio';
-        
-        if (res && res.success) {
-          currentUser = { 
-            isLoggedIn: true, 
-            user: user, 
-            lembaga: res.lembaga, 
-            key: res.licenseKey, 
-            username: res.username, 
-            expiryDate: res.expiryDate 
-          };
-          safeStore.set('portal_user_session', JSON.stringify(currentUser));
-          periksaSesiLogin();
-          renderSemuaKartu();
-        } else if (res && res.isExpired) {
-          bukaModalExpired(res.lembaga, res.username, new Date(res.expiryDate));
-        } else {
-          alertBox.textContent = (res && res.message) ? res.message : 'Verifikasi gagal! Periksa kembali akun Anda.';
-          alertBox.classList.remove('d-none');
-        }
-      }
     }
 
     function logoutUser() {
