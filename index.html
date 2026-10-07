@@ -1,1556 +1,219 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Studio Cetak Kartu Ujian Siswa PRO</title>
-  
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <div id="login-alert" class="alert alert-danger py-2 small rounded-3 d-none"></div>
 
-  <style>
-    :root {
-      --dark-bg: #090d16;
-      --sidebar-bg: #0f172a;
-      --sidebar-border: #1e293b;
-      --panel-dark: #131d31;
-      --accent-neon: #10b981;
-      --card-theme-color: #059669;
-      --card-bg-banner: #ecfdf5;
-      --card-border-banner: #a7f3d0;
-      --card-text-banner: #047857;
-      --text-light: #f8fafc;
-      --text-muted-dark: #94a3b8;
-    }
+  <div>
+    <div class="mb-3">
+      <label class="sidebar-label">Username Akun</label>
+      <div class="input-group">
+        <span class="input-group-text input-group-text-dark border-end-0"><i class="bi bi-person"></i></span>
+        <input type="text" id="login-user" class="form-control input-dark border-start-0" placeholder="Username resmi..." required>
+      </div>
+    </div>
 
-    * {
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-      box-sizing: border-box;
-    }
+    <!-- PASSWORD DENGAN TOMBOL MATA AKTIF -->
+    <div class="mb-3">
+      <label class="sidebar-label">Password</label>
+      <div class="field-password-wrap">
+        <span class="input-group-text input-group-text-dark border-end-0" style="border-radius: 12px 0 0 12px;"><i class="bi bi-key"></i></span>
+        <input type="password" id="login-pass" class="form-control input-dark border-start-0" style="border-radius: 0 12px 12px 0;" placeholder="Password akun..." required>
+        <button type="button" class="btn-eye-clickable" id="btn-toggle-eye" onclick="aksiToggleMata()" title="Lihat/Sembunyikan Password">
+          <i class="bi bi-eye" id="ikon-mata"></i>
+        </button>
+      </div>
+    </div>
 
-    @page { size: A4 portrait; margin: 5mm 6mm; }
-    body { background-color: var(--dark-bg); color: var(--text-light); margin: 0; padding: 0; overflow-x: hidden; }
+    <div class="mb-4">
+      <label class="sidebar-label">Kunci Lisensi (License Key)</label>
+      <div class="input-group">
+        <span class="input-group-text input-group-text-dark border-end-0"><i class="bi bi-patch-check"></i></span>
+        <input type="text" id="login-key" class="form-control input-dark border-start-0 font-monospace text-uppercase" placeholder="LIC-XXXX-XXXX" required>
+      </div>
+    </div>
 
-    /* ANIMASI BLINKING PERINGATAN */
-    @keyframes pulseWarning {
-      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); transform: scale(1); }
-      50% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); transform: scale(1.02); }
-      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); transform: scale(1); }
-    }
-    .badge-blink-warning {
-      animation: pulseWarning 1.8s infinite ease-in-out;
-      background-color: #ef4444 !important;
-      color: #ffffff !important;
-      border: 1px solid #f87171 !important;
-    }
-    .badge-blink-caution {
-      animation: pulseWarning 2.2s infinite ease-in-out;
-      background-color: #f59e0b !important;
-      color: #ffffff !important;
-      border: 1px solid #fbbf24 !important;
-    }
+    <button type="button" id="btn-login-submit" class="btn btn-neon-emerald w-100 py-2.5 justify-content-center shadow-lg" onclick="aksiSubmitLogin()">
+      <i class="bi bi-box-arrow-in-right me-1"></i> Verifikasi &amp; Masuk Studio
+    </button>
+  </div>
+  <div class="text-center mt-3">
+    <small class="text-secondary" style="font-size: 0.72rem;">&copy; 2026 Studio Kartu Ujian Pro &bull; Cloud License Active</small>
+  </div>
+</div>
 
-    /* MODAL LOGIN */
-    #auth-screen {
-      position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      background: radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.25) 0%, rgba(9, 13, 22, 0.98) 85%), #090d16;
-      z-index: 99999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .auth-card {
-      width: 100%;
-      max-width: 440px;
-      background: rgba(15, 23, 42, 0.96);
-      border-radius: 24px;
-      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8);
-      padding: 38px 32px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-    }
-    .auth-logo-icon {
-      width: 58px; height: 58px;
-      background: linear-gradient(135deg, #10b981 0%, #047857 100%);
-      border-radius: 18px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: #ffffff;
-      font-size: 28px;
-      box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.5);
-    }
-    .input-dark {
-      background: #1e293b !important;
-      border: 1.5px solid #334155 !important;
-      color: #f8fafc !important;
-      border-radius: 12px;
-    }
-    .input-dark:focus {
-      border-color: var(--accent-neon) !important;
-      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2) !important;
-    }
-    .input-group-text-dark {
-      background: #1e293b !important;
-      border: 1.5px solid #334155 !important;
-      color: var(--text-muted-dark) !important;
-    }
 
-    /* WADAH INPUT PASSWORD DENGAN TOMBOL MATA YANG PASTI BISA DIKLIK */
-    .field-password-wrap {
-      position: relative;
-      display: flex;
-      align-items: stretch;
-      width: 100%;
-    }
-    .field-password-wrap input {
-      padding-right: 48px !important;
-    }
-    .btn-eye-clickable {
-      position: absolute;
-      right: 0;
-      top: 0;
-      height: 100%;
-      width: 46px;
-      background: transparent;
-      border: none;
-      color: #94a3b8;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      z-index: 50;
-      font-size: 1.25rem;
-    }
-    .btn-eye-clickable:hover {
-      color: #10b981;
-    }
-
-    /* LAYOUT UTAMA */
-    .app-layout {
-      display: flex;
-      height: 100vh;
-      overflow: hidden;
-      position: relative;
-    }
-    .app-sidebar {
-      width: 380px;
-      min-width: 380px;
-      background: var(--sidebar-bg);
-      border-right: 1px solid var(--sidebar-border);
-      display: flex;
-      flex-direction: column;
-      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-      z-index: 1030;
-      position: relative;
-    }
-    .app-sidebar.collapsed {
-      margin-left: -380px;
-    }
-    .sidebar-header {
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--sidebar-border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: rgba(15, 23, 42, 0.85);
-    }
-    .sidebar-content {
-      padding: 18px 20px;
-      overflow-y: auto;
-      flex: 1;
-    }
-    .sidebar-content::-webkit-scrollbar { width: 5px; }
-    .sidebar-content::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-
-    .app-canvas {
-      flex: 1;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      background: radial-gradient(circle at 50% 20%, #172033 0%, #090d16 80%);
-    }
-    .canvas-topbar {
-      height: 64px;
-      padding: 10px 24px;
-      background: rgba(15, 23, 42, 0.85);
-      border-bottom: 1px solid var(--sidebar-border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      z-index: 1020;
-    }
-    .canvas-scroll-area {
-      flex: 1;
-      overflow-y: auto;
-      padding: 30px 15px 80px 15px;
-    }
-    .canvas-scroll-area::-webkit-scrollbar { width: 7px; }
-    .canvas-scroll-area::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-
-    .btn-slide-toggle {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      background: #1e293b;
-      border: 1px solid #334155;
-      color: #f8fafc;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .btn-slide-toggle:hover {
-      background: var(--accent-neon);
-      color: #ffffff;
-      border-color: var(--accent-neon);
-      transform: scale(1.05);
-    }
-
-    .section-title {
-      font-size: 0.72rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: #64748b;
-      margin-bottom: 10px;
-      margin-top: 15px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .sidebar-group {
-      background: var(--panel-dark);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 14px;
-      padding: 14px;
-      margin-bottom: 12px;
-    }
-    .sidebar-label {
-      font-size: 0.73rem;
-      font-weight: 700;
-      color: #94a3b8;
-      margin-bottom: 5px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .select-dark, .input-panel-dark {
-      background-color: #1e293b !important;
-      border: 1.5px solid #334155 !important;
-      color: #f8fafc !important;
-      border-radius: 10px;
-      font-size: 0.82rem;
-      font-weight: 500;
-      padding: 6.5px 10px;
-    }
-    .select-dark:focus, .input-panel-dark:focus {
-      border-color: var(--accent-neon) !important;
-      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2) !important;
-      outline: none;
-    }
-
-    .btn-neon-emerald {
-      background: linear-gradient(135deg, #10b981 0%, #047857 100%);
-      color: white;
-      border: none;
-      font-weight: 600;
-      border-radius: 10px;
-      padding: 7px 16px;
-      font-size: 0.83rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
-      transition: all 0.2s ease;
-    }
-    .btn-neon-emerald:hover {
-      background: linear-gradient(135deg, #059669 0%, #065f46 100%);
-      color: white;
-      transform: translateY(-1px);
-    }
-    .btn-dark-outline {
-      background: #1e293b;
-      border: 1px solid #334155;
-      color: #f8fafc;
-      font-weight: 600;
-      border-radius: 10px;
-      padding: 7px 13px;
-      font-size: 0.82rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.2s ease;
-    }
-    .btn-dark-outline:hover {
-      background: #334155;
-      color: white;
-      transform: translateY(-1px);
-    }
-
-    .stat-pill {
-      background: rgba(30, 41, 59, 0.7);
-      border: 1px solid #334155;
-      padding: 5px 12px;
-      border-radius: 30px;
-      font-size: 0.76rem;
-      font-weight: 600;
-      color: #cbd5e1;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .stat-val {
-      color: var(--accent-neon);
-      font-weight: 800;
-    }
-
-    /* KERTAS CETAK A4 */
-    .sheet-page {
-      width: 198mm;
-      min-height: 287mm;
-      margin: 25px auto;
-      background: #ffffff !important;
-      padding: 2.5mm;
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
-      border-radius: 4px;
-      box-sizing: border-box;
-      page-break-after: always;
-      display: grid;
-      align-content: start;
-      color: #0f172a;
-    }
-    .single-card-mode {
-      display: flex !important;
-      justify-content: center !important;
-      align-items: center !important;
-      min-height: 280mm !important;
-    }
-    .kartu-ujian {
-      border: 1.8px double var(--card-theme-color);
-      border-radius: 4px;
-      box-sizing: border-box;
-      position: relative;
-      background-color: #ffffff;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    .kartu-watermark {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      opacity: 0.07;
-      pointer-events: none;
-      z-index: 0;
-      object-fit: contain;
-    }
-    .kartu-content {
-      position: relative;
-      z-index: 1;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    .kop-wrap { display: flex; align-items: center; border-bottom: 1.2px solid var(--card-theme-color); }
-    .kop-logo { object-fit: contain; }
-    .kop-text { flex: 1; text-align: center; line-height: 1.1; padding: 0 1mm; }
-    .kop-text .instansi { font-weight: bold; color: var(--card-theme-color); margin: 0; }
-    .kop-text .madrasah { font-weight: 900; color: #0f172a; margin: 0; }
-    .kop-text .alamat { color: #475569; margin: 0; }
-    .banner-judul {
-      background-color: var(--card-bg-banner);
-      border: 0.5px solid var(--card-border-banner);
-      text-align: center;
-      font-weight: bold;
-      color: var(--card-text-banner);
-      border-radius: 2px;
-      text-transform: uppercase;
-      letter-spacing: 0.2px;
-    }
-    .tabel-bio { width: 100%; border-collapse: collapse; line-height: 1.15; }
-    .tabel-bio td { vertical-align: middle; }
-    .tabel-bio .lbl { color: #334155; white-space: nowrap; }
-    .tabel-bio .titik { text-align: center; }
-    .tabel-bio .val { font-weight: 600; color: #0f172a; }
-    .badge-ruang {
-      background-color: #e2e8f0;
-      color: #0f172a;
-      border: 0.5px solid #cbd5e1;
-      border-radius: 2px;
-      font-weight: bold;
-      margin-left: 1.5mm;
-    }
-    .token-badge {
-      background-color: #fef08a;
-      border-radius: 2px;
-      font-family: monospace;
-      font-weight: bold;
-      border: 0.5px dashed #ca8a04;
-    }
-    .footer-kartu { display: flex; justify-content: space-between; align-items: flex-end; }
-    .box-foto {
-      border: 0.5px dashed #94a3b8;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #64748b;
-      background: #fafafa;
-      box-sizing: border-box;
-      overflow: hidden;
-    }
-    .box-foto img { width: 100%; height: 100%; object-fit: cover; }
-    .ttd-box { text-align: center; line-height: 1.15; position: relative; }
-    .ttd-box .tempat-tgl { color: #334155; }
-    .ttd-box .jabatan { font-weight: 600; }
-    .ttd-area-relatif { position: relative; display: flex; align-items: center; justify-content: center; }
-    .ttd-img-overlay {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      max-height: 100%; max-width: 90%;
-      object-fit: contain;
-      pointer-events: none;
-      z-index: 2;
-    }
-    .ttd-box .nama-pejabat { font-weight: bold; text-decoration: underline; }
-    .ttd-box .nip-pejabat { color: #334155; }
-
-    /* PRESETS MIKA ID CARD */
-    .preset-b1 { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 54.5mm; gap: 2mm; }
-    .preset-b1 .kartu-ujian { width: 100%; height: 54.5mm; padding: 1.5mm 2.2mm 1.2mm 2.2mm; }
-    .preset-b1 .kartu-watermark { width: 28mm; height: 28mm; }
-    .preset-b1 .kop-wrap { padding-bottom: 0.4mm; margin-bottom: 0.5mm; }
-    .preset-b1 .kop-logo { width: 8.5mm; height: 8.5mm; }
-    .preset-b1 .kop-text .instansi { font-size: 5pt; }
-    .preset-b1 .kop-text .madrasah { font-size: 6.8pt; }
-    .preset-b1 .kop-text .alamat { font-size: 3.8pt; }
-    .preset-b1 .banner-judul { font-size: 4.8pt; padding: 0.3mm 0.8mm; margin-bottom: 0.5mm; }
-    .preset-b1 .tabel-bio { font-size: 5.1pt; }
-    .preset-b1 .tabel-bio td { padding: 0.12mm 0; }
-    .preset-b1 .tabel-bio .lbl { width: 20mm; }
-    .preset-b1 .tabel-bio .titik { width: 1.8mm; }
-    .preset-b1 .badge-ruang { font-size: 4.6pt; padding: 0.1mm 1mm; }
-    .preset-b1 .token-badge { font-size: 5.2pt; padding: 0.1mm 1mm; }
-    .preset-b1 .footer-kartu { font-size: 4.4pt; margin-top: 0.3mm; }
-    .preset-b1 .box-foto { width: 12mm; height: 15mm; font-size: 4.2pt; }
-    .preset-b1 .ttd-area-relatif { height: 5mm; }
-    .preset-b1 .ttd-box .tempat-tgl { font-size: 4.3pt; }
-    .preset-b1 .ttd-box .jabatan { font-size: 4.5pt; }
-    .preset-b1 .ttd-box .nama-pejabat { font-size: 4.6pt; }
-    .preset-b1 .ttd-box .nip-pejabat { font-size: 4.2pt; }
-
-    .preset-b2 { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 68mm; gap: 2.5mm; }
-    .preset-b2 .kartu-ujian { width: 100%; height: 68mm; padding: 2mm 3mm; }
-    .preset-b2 .kartu-watermark { width: 36mm; height: 36mm; }
-    .preset-b2 .kop-wrap { padding-bottom: 0.8mm; margin-bottom: 0.8mm; }
-    .preset-b2 .kop-logo { width: 11mm; height: 11mm; }
-    .preset-b2 .kop-text .instansi { font-size: 6pt; }
-    .preset-b2 .kop-text .madrasah { font-size: 8.5pt; }
-    .preset-b2 .kop-text .alamat { font-size: 4.8pt; }
-    .preset-b2 .banner-judul { font-size: 6pt; padding: 0.5mm 1mm; margin-bottom: 0.8mm; }
-    .preset-b2 .tabel-bio { font-size: 6.2pt; }
-    .preset-b2 .tabel-bio td { padding: 0.3mm 0; }
-    .preset-b2 .tabel-bio .lbl { width: 23mm; }
-    .preset-b2 .tabel-bio .titik { width: 2.2mm; }
-    .preset-b2 .badge-ruang { font-size: 5.5pt; padding: 0.2mm 1.2mm; }
-    .preset-b2 .token-badge { font-size: 6.5pt; padding: 0.2mm 1.5mm; }
-    .preset-b2 .footer-kartu { font-size: 5.5pt; margin-top: 0.5mm; }
-    .preset-b2 .box-foto { width: 16mm; height: 21mm; font-size: 5.2pt; }
-    .preset-b2 .ttd-area-relatif { height: 6.5mm; }
-    .preset-b2 .ttd-box .tempat-tgl { font-size: 5.4pt; }
-    .preset-b2 .ttd-box .jabatan { font-size: 5.6pt; }
-    .preset-b2 .ttd-box .nama-pejabat { font-size: 5.8pt; }
-    .preset-b2 .ttd-box .nip-pejabat { font-size: 5.2pt; }
-
-    .preset-b3 { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 91mm; gap: 3mm; }
-    .preset-b3 .kartu-ujian { width: 100%; height: 91mm; padding: 2.8mm 3.5mm; border-width: 2.2px; }
-    .preset-b3 .kartu-watermark { width: 48mm; height: 48mm; }
-    .preset-b3 .kop-wrap { padding-bottom: 1.2mm; margin-bottom: 1.2mm; border-bottom-width: 1.8px; }
-    .preset-b3 .kop-logo { width: 14mm; height: 14mm; }
-    .preset-b3 .kop-text .instansi { font-size: 7.2pt; }
-    .preset-b3 .kop-text .madrasah { font-size: 10.5pt; }
-    .preset-b3 .kop-text .alamat { font-size: 5.6pt; }
-    .preset-b3 .banner-judul { font-size: 7.4pt; padding: 0.8mm 1.2mm; margin-bottom: 1.2mm; }
-    .preset-b3 .tabel-bio { font-size: 7.4pt; line-height: 1.25; }
-    .preset-b3 .tabel-bio td { padding: 0.6mm 0; }
-    .preset-b3 .tabel-bio .lbl { width: 28mm; }
-    .preset-b3 .tabel-bio .titik { width: 2.5mm; }
-    .preset-b3 .badge-ruang { font-size: 6.8pt; padding: 0.3mm 1.5mm; }
-    .preset-b3 .token-badge { font-size: 7.8pt; padding: 0.3mm 2mm; }
-    .preset-b3 .footer-kartu { font-size: 6.8pt; margin-top: 1mm; }
-    .preset-b3 .box-foto { width: 20mm; height: 27mm; font-size: 6.5pt; }
-    .preset-b3 .ttd-area-relatif { height: 7mm; }
-    .preset-b3 .ttd-box .tempat-tgl { font-size: 6.8pt; }
-    .preset-b3 .ttd-box .jabatan { font-size: 7.2pt; }
-    .preset-b3 .ttd-box .nama-pejabat { font-size: 7.5pt; }
-    .preset-b3 .ttd-box .nip-pejabat { font-size: 6.6pt; }
-
-    .preset-b4 { grid-template-columns: 1fr; grid-auto-rows: 91mm; gap: 3.5mm; width: 145mm !important; }
-    .preset-b4 .kartu-ujian { width: 100%; height: 91mm; padding: 3mm 4mm; border-width: 2.5px; }
-    .preset-b4 .kartu-watermark { width: 55mm; height: 55mm; }
-    .preset-b4 .kop-wrap { padding-bottom: 1.5mm; margin-bottom: 1.5mm; border-bottom-width: 2px; }
-    .preset-b4 .kop-logo { width: 16mm; height: 16mm; }
-    .preset-b4 .kop-text .instansi { font-size: 8pt; }
-    .preset-b4 .kop-text .madrasah { font-size: 12pt; }
-    .preset-b4 .kop-text .alamat { font-size: 6.5pt; }
-    .preset-b4 .banner-judul { font-size: 8.5pt; padding: 1mm 1.5mm; margin-bottom: 1.5mm; }
-    .preset-b4 .tabel-bio { font-size: 8.2pt; line-height: 1.3; }
-    .preset-b4 .tabel-bio td { padding: 0.8mm 0; }
-    .preset-b4 .tabel-bio .lbl { width: 34mm; }
-    .preset-b4 .tabel-bio .titik { width: 3mm; }
-    .preset-b4 .badge-ruang { font-size: 7.5pt; padding: 0.4mm 2mm; }
-    .preset-b4 .token-badge { font-size: 8.8pt; padding: 0.4mm 2.5mm; }
-    .preset-b4 .footer-kartu { font-size: 7.5pt; margin-top: 1mm; }
-    .preset-b4 .box-foto { width: 23mm; height: 30mm; font-size: 7.2pt; }
-    .preset-b4 .ttd-area-relatif { height: 10mm; }
-    .preset-b4 .ttd-box .tempat-tgl { font-size: 7.5pt; }
-    .preset-b4 .ttd-box .jabatan { font-size: 8pt; }
-    .preset-b4 .ttd-box .nama-pejabat { font-size: 8.5pt; }
-    .preset-b4 .ttd-box .nip-pejabat { font-size: 7.2pt; }
-
-    @media print {
-      body { background: transparent !important; }
-      .no-print, .app-sidebar, .canvas-topbar { display: none !important; }
-      .app-layout, .app-canvas, .canvas-scroll-area { height: auto !important; overflow: visible !important; }
-      .sheet-page { margin: 0 auto !important; box-shadow: none !important; padding: 0 !important; }
-    }
-  </style>
-</head>
-<body>
-
-  <!-- ==========================================
-       MODAL LOGIN (DARK THEME + TOMBOL MATA)
-       ========================================== -->
-  <div id="auth-screen">
-    <div class="auth-card">
-      <div class="text-center mb-4">
-        <div class="auth-logo-icon mb-3">
-          <i class="bi bi-shield-lock-fill"></i>
-        </div>
-        <h4 class="fw-bold text-white mb-1">Akses Login Akun PRO</h4>
-        <p class="small mb-0" style="color: #cbd5e1 !important; font-weight: 500;">
-          Portal Cetak Kartu Peserta Ujian Universal Multi-Lembaga
-        </p>
+  <div class="sidebar-content">
+    <div class="section-title"><i class="bi bi-diagram-3-fill text-success"></i> Jenjang &amp; Peserta</div>
+    <div class="sidebar-group">
+      <div class="mb-2">
+        <label class="sidebar-label">Tingkat Jenjang</label>
+        <select id="pilih-jenjang" class="form-select select-dark" onchange="gantiJenjang(this.value)">
+          <option value="MI" selected>Madrasah Ibtidaiyah (MI)</option>
+          <option value="SD">Sekolah Dasar (SD)</option>
+          <option value="MTS">Madrasah Tsanawiyah (MTs)</option>
+          <option value="SMP">Sekolah Menengah Pertama (SMP)</option>
+          <option value="MA">Madrasah Aliyah (MA)</option>
+          <option value="SMA">SMA / SMK</option>
+        </select>
       </div>
 
-      <div id="login-alert" class="alert alert-danger py-2 small rounded-3 d-none"></div>
+      <div class="row g-2 mb-2">
+        <div class="col-6">
+          <label class="sidebar-label">Pilih Kelas</label>
+          <select id="filter-kelas" class="form-select select-dark" onchange="filterSiswa()"></select>
+        </div>
+        <div class="col-6">
+          <label class="sidebar-label">Ruang Ujian</label>
+          <select id="pilih-ruang" class="form-select select-dark" onchange="renderSemuaKartu()">
+            <option value="">(Tanpa Ruang)</option>
+            <option value="Ruang 01">Ruang 01</option>
+            <option value="Ruang 02">Ruang 02</option>
+            <option value="Ruang 03">Ruang 03</option>
+            <option value="Ruang 04">Ruang 04</option>
+            <option value="Ruang 05">Ruang 05</option>
+            <option value="Ruang 06">Ruang 06</option>
+          </select>
+        </div>
+      </div>
 
       <div>
-        <div class="mb-3">
-          <label class="sidebar-label">Username Akun</label>
-          <div class="input-group">
-            <span class="input-group-text input-group-text-dark border-end-0"><i class="bi bi-person"></i></span>
-            <input type="text" id="login-user" class="form-control input-dark border-start-0" placeholder="Username resmi..." required>
-          </div>
-        </div>
-
-        <!-- PASSWORD DENGAN TOMBOL MATA AKTIF & BEBAS BENTROK -->
-        <div class="mb-3">
-          <label class="sidebar-label">Password</label>
-          <div class="field-password-wrap">
-            <span class="input-group-text input-group-text-dark border-end-0" style="border-radius: 12px 0 0 12px;"><i class="bi bi-key"></i></span>
-            <input type="password" id="login-pass" class="form-control input-dark border-start-0" style="border-radius: 0 12px 12px 0;" placeholder="Password akun..." required>
-            <button type="button" class="btn-eye-clickable" id="btn-toggle-eye" onclick="aksiToggleMata()" title="Lihat/Sembunyikan Password">
-              <i class="bi bi-eye" id="ikon-mata"></i>
-            </button>
-          </div>
-        </div>
-
-        <div class="mb-4">
-          <label class="sidebar-label">Kunci Lisensi (License Key)</label>
-          <div class="input-group">
-            <span class="input-group-text input-group-text-dark border-end-0"><i class="bi bi-patch-check"></i></span>
-            <input type="text" id="login-key" class="form-control input-dark border-start-0 font-monospace text-uppercase" placeholder="LIC-XXXX-XXXX" required>
-          </div>
-        </div>
-
-        <button type="button" id="btn-login-submit" class="btn btn-neon-emerald w-100 py-2.5 justify-content-center shadow-lg" onclick="aksiSubmitLogin()">
-          <i class="bi bi-box-arrow-in-right me-1"></i> Verifikasi &amp; Masuk Studio
-        </button>
-      </div>
-      <div class="text-center mt-3">
-        <small class="text-secondary" style="font-size: 0.72rem;">&copy; 2026 Studio Kartu Ujian Pro &bull; Cloud License Active</small>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL KEDALUWARSA (OPSI B: RAMAH & SOLUTIF) -->
-  <div class="modal fade no-print" id="modalExpiredLisensi" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content auth-card p-4 border border-warning">
-        <div class="text-center mb-3">
-          <div class="auth-logo-icon mb-2" style="background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);">
-            <i class="bi bi-hourglass-bottom"></i>
-          </div>
-          <h5 class="fw-bold text-white mb-1">Waktunya Memperbarui Lisensi Anda</h5>
-          <span class="badge bg-warning text-dark px-3 py-1 rounded-pill fw-semibold">Masa Berlaku Berakhir</span>
-        </div>
-        <div class="modal-body py-2 text-center">
-          <p class="small text-light" style="line-height: 1.6;">
-            Terima kasih telah menggunakan <strong>Platform Cetak Kartu Ujian PRO</strong>. Masa berlaku akun Anda telah selesai. Data siswa yang tersimpan di perangkat Anda tetap aman.
-          </p>
-          <p class="small text-muted mb-3" style="font-size: 0.78rem;">
-            Hubungi tim kami untuk memperbarui masa aktif dan melanjutkan pencetakan kartu ujian tanpa kendala.
-          </p>
-          <div class="d-grid gap-2">
-            <a href="#" id="btn-wa-renew" target="_blank" class="btn btn-neon-emerald py-2 justify-content-center text-decoration-none">
-              <i class="bi bi-whatsapp me-2"></i> Hubungi Admin via WhatsApp
-            </a>
-            <button type="button" class="btn btn-dark-outline justify-content-center" onclick="tutupModalExpiredKeLogin()">
-              <i class="bi bi-arrow-left me-1"></i> Kembali ke Halaman Login
-            </button>
-          </div>
+        <label class="sidebar-label">Cetak Satuan</label>
+        <div class="input-group input-group-sm">
+          <select id="filter-siswa" class="form-select select-dark" onchange="renderSemuaKartu()">
+            <option value="">-- Semua Siswa --</option>
+          </select>
+          <button class="btn btn-dark-outline" type="button" onclick="resetPilihSiswa()"><i class="bi bi-x-lg"></i></button>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- LAYOUT UTAMA: SIDEBAR + CANVAS -->
-  <div class="app-layout">
-    <aside class="app-sidebar no-print" id="appSidebar">
-      <div class="sidebar-header">
+    <div class="section-title"><i class="bi bi-aspect-ratio-fill text-info"></i> Format &amp; Tema</div>
+    <div class="sidebar-group">
+      <div class="mb-2">
+        <label class="sidebar-label">Ukuran Mika ID Card</label>
+        <select id="pilih-ukuran-mika" class="form-select select-dark" onchange="renderSemuaKartu()">
+          <option value="preset-b1" data-kapasitas="10">Mika B1 (10 Kartu / A4)</option>
+          <option value="preset-b2" data-kapasitas="8">Mika B2 (8 Kartu / A4)</option>
+          <option value="preset-b3" data-kapasitas="6" selected>Mika B3 (6 Kartu / A4) [Best]</option>
+          <option value="preset-b4" data-kapasitas="3">Mika B4 (3 Kartu / A4 - Jumbo)</option>
+        </select>
+      </div>
+
+      <div class="mb-2">
+        <label class="sidebar-label">Judul Kartu Ujian</label>
+        <select id="pilih-jenis-kartu" class="form-select select-dark" onchange="gantiJenisKartu()">
+          <option value="KARTU PESERTA ASESMEN SUMATIF AKHIR SEMESTER (SAS) GANJIL">Asesmen Sumatif Ganjil</option>
+          <option value="KARTU PESERTA ASESMEN SUMATIF AKHIR SEMESTER (SAS) GENAP">Asesmen Sumatif Genap</option>
+          <option value="KARTU PESERTA ASESMEN AKHIR JENJANG T.P. 2025/2026" selected>Asesmen Akhir Jenjang</option>
+          <option value="KARTU PESERTA TRY OUT UJIAN AKHIR">Try Out Ujian Akhir</option>
+          <option value="KUSTOM">Tulis Judul Kustom...</option>
+        </select>
+        <div class="d-none mt-2" id="wrap-judul-kustom">
+          <input type="text" id="input-judul-kustom" class="form-control input-panel-dark form-control-sm" placeholder="Ketik Judul Sendiri..." oninput="updateJudulKartuLangsung()">
+        </div>
+      </div>
+
+      <div class="mb-2">
+        <label class="sidebar-label">Sakelar Token</label>
+        <select id="opsi-token" class="form-select select-dark" onchange="gantiOpsiToken(this.value)">
+          <option value="sembunyi" selected>Sembunyikan Token</option>
+          <option value="dari_data">Dari Data Excel</option>
+          <option value="seragam">1 Token Seragam</option>
+        </select>
+        <input type="text" id="inp-token-seragam" class="form-control input-panel-dark form-control-sm font-monospace d-none mt-1" placeholder="Token Seragam..." oninput="updateTokenLangsung()">
+      </div>
+
+      <div>
+        <label class="sidebar-label">Warna Aksen Kartu</label>
         <div class="d-flex align-items-center gap-2">
-          <div class="auth-logo-icon" style="width: 38px; height: 38px; font-size: 18px; border-radius: 10px; flex-shrink: 0;">
-            <i class="bi bi-mortarboard-fill"></i>
-          </div>
-          <div>
-            <!-- Judul lengkap dengan warna putih terang & jelas -->
-            <h6 class="fw-bold mb-0 text-white" style="font-size: 0.88rem; letter-spacing: 0.3px;">
-              Panel Generator Kartu Ujian PRO
-            </h6>
-            <!-- Subjudul dengan warna cyan/emerald terang dan kontras tinggi -->
-            <small style="color: #6ee7b7 !important; font-size: 0.73rem; font-weight: 600;">
-              <i class="bi bi-sliders me-1"></i>Pengaturan Kartu
-            </small>
-          </div>
-        </div>
-        <button class="btn-slide-toggle" onclick="toggleSidebar()" title="Tutup Slidebar">
-          <i class="bi bi-layout-sidebar-inset"></i>
-        </button>
-      </div>
-
-      <div class="sidebar-content">
-        <div class="section-title"><i class="bi bi-diagram-3-fill text-success"></i> Jenjang &amp; Peserta</div>
-        <div class="sidebar-group">
-          <div class="mb-2">
-            <label class="sidebar-label">Tingkat Jenjang</label>
-            <select id="pilih-jenjang" class="form-select select-dark" onchange="gantiJenjang(this.value)">
-              <option value="MI" selected>Madrasah Ibtidaiyah (MI)</option>
-              <option value="SD">Sekolah Dasar (SD)</option>
-              <option value="MTS">Madrasah Tsanawiyah (MTs)</option>
-              <option value="SMP">Sekolah Menengah Pertama (SMP)</option>
-              <option value="MA">Madrasah Aliyah (MA)</option>
-              <option value="SMA">SMA / SMK</option>
-            </select>
-          </div>
-
-          <div class="row g-2 mb-2">
-            <div class="col-6">
-              <label class="sidebar-label">Pilih Kelas</label>
-              <select id="filter-kelas" class="form-select select-dark" onchange="filterSiswa()"></select>
-            </div>
-            <div class="col-6">
-              <label class="sidebar-label">Ruang Ujian</label>
-              <select id="pilih-ruang" class="form-select select-dark" onchange="renderSemuaKartu()">
-                <option value="">(Tanpa Ruang)</option>
-                <option value="Ruang 01">Ruang 01</option>
-                <option value="Ruang 02">Ruang 02</option>
-                <option value="Ruang 03">Ruang 03</option>
-                <option value="Ruang 04">Ruang 04</option>
-                <option value="Ruang 05">Ruang 05</option>
-                <option value="Ruang 06">Ruang 06</option>
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label class="sidebar-label">Cetak Satuan</label>
-            <div class="input-group input-group-sm">
-              <select id="filter-siswa" class="form-select select-dark" onchange="renderSemuaKartu()">
-                <option value="">-- Semua Siswa --</option>
-              </select>
-              <button class="btn btn-dark-outline" type="button" onclick="resetPilihSiswa()"><i class="bi bi-x-lg"></i></button>
-            </div>
-          </div>
-        </div>
-
-        <div class="section-title"><i class="bi bi-aspect-ratio-fill text-info"></i> Format &amp; Tema</div>
-        <div class="sidebar-group">
-          <div class="mb-2">
-            <label class="sidebar-label">Ukuran Mika ID Card</label>
-            <select id="pilih-ukuran-mika" class="form-select select-dark" onchange="renderSemuaKartu()">
-              <option value="preset-b1" data-kapasitas="10">Mika B1 (10 Kartu / A4)</option>
-              <option value="preset-b2" data-kapasitas="8">Mika B2 (8 Kartu / A4)</option>
-              <option value="preset-b3" data-kapasitas="6" selected>Mika B3 (6 Kartu / A4) [Best]</option>
-              <option value="preset-b4" data-kapasitas="3">Mika B4 (3 Kartu / A4 - Jumbo)</option>
-            </select>
-          </div>
-
-          <div class="mb-2">
-            <label class="sidebar-label">Judul Kartu Ujian</label>
-            <select id="pilih-jenis-kartu" class="form-select select-dark" onchange="gantiJenisKartu()">
-              <option value="KARTU PESERTA ASESMEN SUMATIF AKHIR SEMESTER (SAS) GANJIL">Asesmen Sumatif Ganjil</option>
-              <option value="KARTU PESERTA ASESMEN SUMATIF AKHIR SEMESTER (SAS) GENAP">Asesmen Sumatif Genap</option>
-              <option value="KARTU PESERTA ASESMEN AKHIR JENJANG T.P. 2025/2026" selected>Asesmen Akhir Jenjang</option>
-              <option value="KARTU PESERTA TRY OUT UJIAN AKHIR">Try Out Ujian Akhir</option>
-              <option value="KUSTOM">Tulis Judul Kustom...</option>
-            </select>
-            <div class="d-none mt-2" id="wrap-judul-kustom">
-              <input type="text" id="input-judul-kustom" class="form-control input-panel-dark form-control-sm" placeholder="Ketik Judul Sendiri..." oninput="updateJudulKartuLangsung()">
-            </div>
-          </div>
-
-          <div class="mb-2">
-            <label class="sidebar-label">Sakelar Token</label>
-            <select id="opsi-token" class="form-select select-dark" onchange="gantiOpsiToken(this.value)">
-              <option value="sembunyi" selected>Sembunyikan Token</option>
-              <option value="dari_data">Dari Data Excel</option>
-              <option value="seragam">1 Token Seragam</option>
-            </select>
-            <input type="text" id="inp-token-seragam" class="form-control input-panel-dark form-control-sm font-monospace d-none mt-1" placeholder="Token Seragam..." oninput="updateTokenLangsung()">
-          </div>
-
-          <div>
-            <label class="sidebar-label">Warna Aksen Kartu</label>
-            <div class="d-flex align-items-center gap-2">
-              <input type="color" id="tema-warna-picker" class="form-control form-control-color input-panel-dark w-25 p-1" value="#059669" onchange="ubahWarnaTema(this.value)">
-              <select class="form-select select-dark w-75" onchange="ubahWarnaTema(this.value)">
-                <option value="#059669">Hijau Zamrud</option>
-                <option value="#0284c7">Biru Safir</option>
-                <option value="#b91c1c">Merah Marun</option>
-                <option value="#4338ca">Indigo Modern</option>
-                <option value="#334155">Dark Slate</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div class="section-title"><i class="bi bi-pen-fill text-warning"></i> Legalitas &amp; Pejabat</div>
-        <div class="sidebar-group">
-          <div class="mb-2">
-            <label class="sidebar-label">Titimangsa (Tempat, Tgl)</label>
-            <select id="select-titimangsa" class="form-select select-dark" onchange="ubahTitimangsa(this.value)">
-              <option value="Kota / Kab, ....................">Kota / Kab, ....................</option>
-              <option value="KUSTOM">Ketik Sendiri...</option>
-            </select>
-            <input type="text" id="inp-titimangsa-kustom" class="form-control input-panel-dark form-control-sm d-none mt-1" placeholder="Ponorogo, 10 Mei 2026" oninput="updateFooterTtdLangsung()">
-          </div>
-
-          <div class="mb-2">
-            <label class="sidebar-label" id="lbl-pejabat">Kepala Madrasah</label>
-            <select id="select-kamad" class="form-select select-dark" onchange="ubahKamad(this.value)">
-              <option value="titik">...................................... (Titik-titik)</option>
-              <option value="KUSTOM">Ketik Nama Kepala...</option>
-            </select>
-            <input type="text" id="inp-kamad-nama" class="form-control input-panel-dark form-control-sm d-none mt-1" placeholder="Nama & Gelar Pejabat" oninput="updateFooterTtdLangsung()">
-          </div>
-
-          <div>
-            <label class="sidebar-label">NIP Pejabat</label>
-            <select id="select-nip" class="form-select select-dark" onchange="ubahNip(this.value)">
-              <option value="sembunyi">Tanpa NIP</option>
-              <option value="titik">NIP. ..................................</option>
-              <option value="KUSTOM">Ketik NIP Sendiri...</option>
-            </select>
-            <input type="text" id="inp-kamad-nip" class="form-control input-panel-dark form-control-sm d-none mt-1" placeholder="19800101 200501 1 001" oninput="updateFooterTtdLangsung()">
-          </div>
-        </div>
-
-        <div class="d-grid gap-2 mt-3">
-          <button class="btn btn-dark-outline justify-content-center" data-bs-toggle="modal" data-bs-target="#modalLembaga">
-            <i class="bi bi-building-gear text-primary"></i> Edit Kop Lembaga
-          </button>
-          <button class="btn btn-dark-outline justify-content-center" data-bs-toggle="modal" data-bs-target="#modalUploadExcel">
-            <i class="bi bi-file-earmark-spreadsheet text-success"></i> Impor Excel Siswa
-          </button>
-          <button class="btn btn-dark-outline justify-content-center" data-bs-toggle="modal" data-bs-target="#modalMedia">
-            <i class="bi bi-images text-warning"></i> Upload Logo, Foto &amp; TTD
-          </button>
-        </div>
-      </div>
-    </aside>
-
-    <main class="app-canvas">
-      <div class="canvas-topbar no-print">
-        <div class="d-flex align-items-center gap-3">
-          <button class="btn-slide-toggle" id="btnToggleBar" onclick="toggleSidebar()" title="Buka/Tutup Sidebar">
-            <i class="bi bi-layout-sidebar-inset"></i>
-          </button>
-          <div>
-            <h6 class="fw-bold text-white mb-0" id="display-nama-lembaga">Studio Kartu Ujian PRO</h6>
-            <div class="d-flex align-items-center gap-2 mt-0.5">
-              <span id="badge-expiry-countdown" class="badge bg-success-subtle text-success border border-success-subtle rounded-pill" style="font-size: 0.68rem;">
-                <i class="bi bi-patch-check-fill me-1"></i>LISENSI AKTIF
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div class="d-flex align-items-center gap-3">
-          <div class="stat-pill d-none d-md-inline-flex">
-            <i class="bi bi-people-fill text-info"></i> Peserta: <span class="stat-val" id="stat-total-siswa">0</span>
-          </div>
-          <div class="stat-pill d-none d-md-inline-flex">
-            <i class="bi bi-file-earmark-text-fill text-success"></i> Lembar A4: <span class="stat-val" id="stat-total-halaman">0</span>
-          </div>
-
-          <button class="btn btn-neon-emerald" onclick="window.print()">
-            <i class="bi bi-printer-fill"></i> Cetak A4
-          </button>
-          <button class="btn btn-dark-outline px-2.5" onclick="logoutUser()" title="Keluar Akun">
-            <i class="bi bi-power text-danger"></i>
-          </button>
-        </div>
-      </div>
-
-      <div class="canvas-scroll-area">
-        <div id="wadah-halaman"></div>
-      </div>
-    </main>
-  </div>
-
-  <!-- MODAL PROFIL & KOP -->
-  <div class="modal fade no-print" id="modalLembaga" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content auth-card p-4">
-        <div class="modal-header border-bottom border-secondary border-opacity-25 pb-3">
-          <h6 class="modal-title fw-bold text-white"><i class="bi bi-building-gear text-primary me-2"></i>Pengaturan Kop Surat Lembaga</h6>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body py-3">
-          <div class="mb-3">
-            <label class="sidebar-label">Nama Instansi / Yayasan / Dinas</label>
-            <input type="text" id="cfg-instansi" class="form-control input-dark" value="KEMENTERIAN AGAMA REPUBLIK INDONESIA">
-          </div>
-          <div class="mb-3">
-            <label class="sidebar-label">Nama Sekolah / Madrasah</label>
-            <input type="text" id="cfg-madrasah" class="form-control input-dark" value="MADRASAH IBTIDAIYAH NEGERI">
-          </div>
-          <div class="mb-2">
-            <label class="sidebar-label">Alamat Lengkap &amp; Kontak</label>
-            <input type="text" id="cfg-alamat" class="form-control input-dark" value="Jl. Pendidikan Nasional No. 1, Kabupaten / Kota">
-          </div>
-        </div>
-        <div class="modal-footer border-top border-secondary border-opacity-25 pt-2">
-          <button type="button" class="btn btn-dark-outline" data-bs-dismiss="modal">Batal</button>
-          <button type="button" class="btn btn-neon-emerald" onclick="simpanProfilLembaga()">Terapkan &amp; Simpan</button>
+          <input type="color" id="tema-warna-picker" class="form-control form-control-color input-panel-dark w-25 p-1" value="#059669" onchange="ubahWarnaTema(this.value)">
+          <select class="form-select select-dark w-75" onchange="ubahWarnaTema(this.value)">
+            <option value="#059669">Hijau Zamrud</option>
+            <option value="#0284c7">Biru Safir</option>
+            <option value="#b91c1c">Merah Marun</option>
+            <option value="#4338ca">Indigo Modern</option>
+            <option value="#334155">Dark Slate</option>
+          </select>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- MODAL IMPOR EXCEL -->
-  <div class="modal fade no-print" id="modalUploadExcel" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content auth-card p-4">
-        <div class="modal-header border-bottom border-secondary border-opacity-25 pb-3">
-          <h6 class="modal-title fw-bold text-white"><i class="bi bi-file-earmark-spreadsheet text-success me-2"></i>Impor Data Siswa via Excel</h6>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body py-3">
-          <div class="p-3 bg-success bg-opacity-10 border border-success border-opacity-25 rounded-3 text-success small mb-3">
-            <i class="bi bi-shield-check me-1"></i> Data Excel diproses langsung secara lokal di peramban tanpa disimpan ke server pihak ketiga.
-          </div>
-          <div class="mb-3">
-            <button class="btn btn-dark-outline w-100 justify-content-center py-2" onclick="downloadTemplateExcel()">
-              <i class="bi bi-download me-1"></i> Unduh Format Template Excel (.xlsx)
-            </button>
-          </div>
-          <div class="mb-2">
-            <label class="sidebar-label">Pilih File Excel Anda</label>
-            <input type="file" id="inp-excel-file" accept=".xlsx, .xls" class="form-control input-dark">
-          </div>
-        </div>
-        <div class="modal-footer border-top border-secondary border-opacity-25 pt-2">
-          <button type="button" class="btn btn-dark-outline" data-bs-dismiss="modal">Tutup</button>
-          <button type="button" class="btn btn-neon-emerald" onclick="prosesImporExcel()">Mulai Impor Data</button>
+    <div class="section-title"><i class="bi bi-pen-fill text-warning"></i> Legalitas &amp; Pejabat</div>
+    <div class="sidebar-group">
+      <div class="mb-2">
+        <label class="sidebar-label">Titimangsa (Tempat, Tgl)</label>
+        <select id="select-titimangsa" class="form-select select-dark" onchange="ubahTitimangsa(this.value)">
+          <option value="Kota / Kab, ....................">Kota / Kab, ....................</option>
+          <option value="KUSTOM">Ketik Sendiri...</option>
+        </select>
+        <input type="text" id="inp-titimangsa-kustom" class="form-control input-panel-dark form-control-sm d-none mt-1" placeholder="Ponorogo, 10 Mei 2026" oninput="updateFooterTtdLangsung()">
+      </div>
+
+      <div class="mb-2">
+        <label class="sidebar-label" id="lbl-pejabat">Kepala Madrasah</label>
+        <select id="select-kamad" class="form-select select-dark" onchange="ubahKamad(this.value)">
+          <option value="titik">...................................... (Titik-titik)</option>
+          <option value="KUSTOM">Ketik Nama Kepala...</option>
+        </select>
+        <input type="text" id="inp-kamad-nama" class="form-control input-panel-dark form-control-sm d-none mt-1" placeholder="Nama & Gelar Pejabat" oninput="updateFooterTtdLangsung()">
+      </div>
+
+      <div>
+        <label class="sidebar-label">NIP Pejabat</label>
+        <select id="select-nip" class="form-select select-dark" onchange="ubahNip(this.value)">
+          <option value="sembunyi">Tanpa NIP</option>
+          <option value="titik">NIP. ..................................</option>
+          <option value="KUSTOM">Ketik NIP Sendiri...</option>
+        </select>
+        <input type="text" id="inp-kamad-nip" class="form-control input-panel-dark form-control-sm d-none mt-1" placeholder="19800101 200501 1 001" oninput="updateFooterTtdLangsung()">
+      </div>
+    </div>
+
+    <div class="d-grid gap-2 mt-3">
+      <button class="btn btn-dark-outline justify-content-center" data-bs-toggle="modal" data-bs-target="#modalLembaga">
+        <i class="bi bi-building-gear text-primary"></i> Edit Kop Lembaga
+      </button>
+      <button class="btn btn-dark-outline justify-content-center" data-bs-toggle="modal" data-bs-target="#modalUploadExcel">
+        <i class="bi bi-file-earmark-spreadsheet text-success"></i> Impor Excel Siswa
+      </button>
+      <button class="btn btn-dark-outline justify-content-center" data-bs-toggle="modal" data-bs-target="#modalMedia">
+        <i class="bi bi-images text-warning"></i> Upload Logo, Foto &amp; TTD
+      </button>
+    </div>
+  </div>
+</aside>
+
+<main class="app-canvas">
+  <div class="canvas-topbar no-print">
+    <div class="d-flex align-items-center gap-3">
+      <button class="btn-slide-toggle" id="btnToggleBar" onclick="toggleSidebar()" title="Buka/Tutup Sidebar">
+        <i class="bi bi-layout-sidebar-inset"></i>
+      </button>
+      <div>
+        <h6 class="fw-bold text-white mb-0" id="display-nama-lembaga">Studio Kartu Ujian PRO</h6>
+        <div class="d-flex align-items-center gap-2 mt-0.5">
+          <span id="badge-expiry-countdown" class="badge bg-success-subtle text-success border border-success-subtle rounded-pill" style="font-size: 0.68rem;">
+            <i class="bi bi-patch-check-fill me-1"></i>LISENSI AKTIF
+          </span>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- MODAL MEDIA -->
-  <div class="modal fade no-print" id="modalMedia" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content auth-card p-4">
-        <div class="modal-header border-bottom border-secondary border-opacity-25 pb-3">
-          <h6 class="modal-title fw-bold text-white"><i class="bi bi-images text-warning me-2"></i>Kelola Logo, Tanda Tangan &amp; Foto Siswa</h6>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body py-3">
-          <h6 class="fw-bold small text-info mb-2"><i class="bi bi-badge-ad me-1"></i> 1. Logo Kop Surat</h6>
-          <div class="row g-2 mb-3">
-            <div class="col-6">
-              <label class="sidebar-label">Logo Kiri (Dinas)</label>
-              <input type="file" id="inp-logo-kiri" accept="image/*" class="form-control input-dark form-control-sm">
-            </div>
-            <div class="col-6">
-              <label class="sidebar-label">Logo Kanan (Sekolah)</label>
-              <input type="file" id="inp-logo-kanan" accept="image/*" class="form-control input-dark form-control-sm">
-            </div>
-          </div>
-          <hr class="border-secondary opacity-25 my-3">
-          <h6 class="fw-bold small text-info mb-2"><i class="bi bi-pen me-1"></i> 2. Tanda Tangan Digital (PNG Transparan)</h6>
-          <div class="mb-3">
-            <input type="file" id="inp-ttd-pejabat" accept="image/png, image/jpeg" class="form-control input-dark form-control-sm">
-            <button class="btn btn-link text-danger btn-sm p-0 mt-1 text-decoration-none" onclick="hapusTtdDigital()"><i class="bi bi-trash3 me-1"></i>Hapus Tanda Tangan</button>
-          </div>
-          <hr class="border-secondary opacity-25 my-3">
-          <h6 class="fw-bold small text-info mb-1"><i class="bi bi-person-bounding-box me-1"></i> 3. Upload Foto Massal Siswa</h6>
-          <p class="text-muted small mb-2" style="font-size: 0.73rem;">
-            Pilih sekaligus puluhan foto (JPG/PNG). Beri nama file foto sesuai <strong>Nomor Peserta</strong> (misal: <code>A-001.jpg</code>) atau <strong>NISN</strong> siswa.
-          </p>
-          <div class="mb-2">
-            <input type="file" id="inp-foto-massal" accept="image/*" multiple class="form-control input-dark form-control-sm">
-            <div id="foto-match-info" class="small text-success fw-semibold mt-1"></div>
-          </div>
-        </div>
-        <div class="modal-footer border-top border-secondary border-opacity-25 pt-2">
-          <button type="button" class="btn btn-neon-emerald" data-bs-dismiss="modal">Selesai</button>
-        </div>
+    <div class="d-flex align-items-center gap-3">
+      <div class="stat-pill d-none d-md-inline-flex">
+        <i class="bi bi-people-fill text-info"></i> Peserta: <span class="stat-val" id="stat-total-siswa">0</span>
       </div>
+      <div class="stat-pill d-none d-md-inline-flex">
+        <i class="bi bi-file-earmark-text-fill text-success"></i> Lembar A4: <span class="stat-val" id="stat-total-halaman">0</span>
+      </div>
+
+      <button class="btn btn-neon-emerald" onclick="window.print()">
+        <i class="bi bi-printer-fill"></i> Cetak A4
+      </button>
+      <button class="btn btn-dark-outline px-2.5" onclick="logoutUser()" title="Keluar Akun">
+        <i class="bi bi-power text-danger"></i>
+      </button>
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-  <script>
-    var NOMOR_WA_ADMIN = "6281234567890"; // Ganti dengan nomor WhatsApp Anda
-
-    function toggleSidebar() {
-      var sidebar = document.getElementById('appSidebar');
-      if (sidebar) sidebar.classList.toggle('collapsed');
-    }
-
-    // FUNGSI TOGGLE MATA (PASTI BERHASIL KARENA LANGSUNG MENGUBAH ATRIBUT INPUT)
-    function aksiToggleMata() {
-      var input = document.getElementById('login-pass');
-      var icon = document.getElementById('ikon-mata');
-      if (!input || !icon) return;
-
-      if (input.type === 'password') {
-        input.type = 'text';
-        icon.className = 'bi bi-eye-slash text-warning';
-      } else {
-        input.type = 'password';
-        icon.className = 'bi bi-eye';
-      }
-    }
-
-    var safeStore = {
-      get: function(key) {
-        try { return localStorage.getItem(key); } catch(e) { return window['_mem_' + key] || null; }
-      },
-      set: function(key, val) {
-        try { localStorage.setItem(key, val); } catch(e) { window['_mem_' + key] = val; }
-      },
-      remove: function(key) {
-        try { localStorage.removeItem(key); } catch(e) { delete window['_mem_' + key]; }
-      }
-    };
-
-    var currentUser = null;
-    try {
-      var saved = safeStore.get('portal_user_session');
-      if (saved) currentUser = JSON.parse(saved);
-    } catch(e) { currentUser = null; }
-
-    function periksaSesiLogin() {
-      var authScreen = document.getElementById('auth-screen');
-      if (currentUser && currentUser.isLoggedIn) {
-        if (currentUser.expiryDate) {
-          var today = new Date();
-          var expDate = new Date(currentUser.expiryDate);
-          var diffTime = expDate - today;
-          var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-          if (diffDays <= 0) {
-            bukaModalExpired(currentUser.lembaga, currentUser.username, expDate);
-            return;
-          } else {
-            authScreen.style.display = 'none';
-            document.getElementById('display-nama-lembaga').textContent = currentUser.lembaga || 'Studio Kartu Ujian PRO';
-            document.getElementById('cfg-madrasah').value = currentUser.lembaga || 'Sekolah / Madrasah';
-            updateBadgeCountdown(diffDays, expDate);
-          }
-        } else {
-          authScreen.style.display = 'none';
-          document.getElementById('display-nama-lembaga').textContent = currentUser.lembaga || 'Studio Kartu Ujian PRO';
-          document.getElementById('cfg-madrasah').value = currentUser.lembaga || 'Sekolah / Madrasah';
-          var badge = document.getElementById('badge-expiry-countdown');
-          badge.className = "badge bg-success-subtle text-success border border-success-subtle rounded-pill";
-          badge.innerHTML = '<i class="bi bi-patch-check-fill me-1"></i>LISENSI AKTIF (SELAMANYA)';
-        }
-      } else {
-        authScreen.style.display = 'flex';
-      }
-    }
-
-    function updateBadgeCountdown(sisaHari, expDate) {
-      var badge = document.getElementById('badge-expiry-countdown');
-      var tglFormatted = expDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
-
-      if (sisaHari <= 7) {
-        badge.className = "badge badge-blink-warning rounded-pill px-2.5 py-1";
-        badge.innerHTML = '<i class="bi bi-exclamation-triangle-fill me-1"></i>LISENSI HABIS ' + sisaHari + ' HARI LAGI (s/d ' + tglFormatted + ')';
-      } else if (sisaHari <= 14) {
-        badge.className = "badge badge-blink-caution rounded-pill px-2.5 py-1";
-        badge.innerHTML = '<i class="bi bi-clock-history me-1"></i>SISA MASA AKTIF: ' + sisaHari + ' HARI (s/d ' + tglFormatted + ')';
-      } else {
-        badge.className = "badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-1";
-        badge.innerHTML = '<i class="bi bi-patch-check-fill me-1"></i>MASA AKTIF: ' + sisaHari + ' HARI LAGI (s/d ' + tglFormatted + ')';
-      }
-    }
-
-    function bukaModalExpired(lembaga, user, expDate) {
-      var authScreen = document.getElementById('auth-screen');
-      authScreen.style.display = 'none';
-
-      var tglFormatted = expDate ? expDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
-      var textWA = encodeURIComponent('Halo Admin, saya dari ' + (lembaga || 'Sekolah/Madrasah') + ' (Username: ' + (user || '-') + '). Masa aktif lisensi aplikasi kartu ujian kami telah selesai pada ' + tglFormatted + '. Mohon informasi perpanjangan lisensinya. Terima kasih!');
-      document.getElementById('btn-wa-renew').href = 'https://wa.me/' + NOMOR_WA_ADMIN + '?text=' + textWA;
-
-      var modalExpired = new bootstrap.Modal(document.getElementById('modalExpiredLisensi'));
-      modalExpired.show();
-    }
-
-    function tutupModalExpiredKeLogin() {
-      var modalEl = document.getElementById('modalExpiredLisensi');
-      var modalInstance = bootstrap.Modal.getInstance(modalEl);
-      if (modalInstance) modalInstance.hide();
-      logoutUser();
-    }
-
-    // FUNGSI LOGIN YANG MEMUNCULKAN PESAN KESALAHAN JELAS JIKA SERVER GAGAL
-    function aksiSubmitLogin() {
-      var user = document.getElementById('login-user').value.trim();
-      var pass = document.getElementById('login-pass').value.trim();
-      var key  = document.getElementById('login-key').value.trim();
-      var btn  = document.getElementById('btn-login-submit');
-      var alertBox = document.getElementById('login-alert');
-
-      if (!user || !pass || !key) {
-        alertBox.textContent = 'Harap isi Username, Password, dan Kunci Lisensi!';
-        alertBox.classList.remove('d-none');
-        return;
-      }
-
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Memverifikasi ke Server...';
-      alertBox.classList.add('d-none');
-
-      if (typeof google !== 'undefined' && google.script && google.script.run) {
-        google.script.run
-          .withSuccessHandler(function(res) {
-            btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-box-arrow-in-right me-1"></i> Verifikasi & Masuk Studio';
-            if (res && res.success) {
-              currentUser = { 
-                isLoggedIn: true, 
-                user: user, 
-                lembaga: res.lembaga, 
-                key: res.licenseKey,
-                username: res.username,
-                expiryDate: res.expiryDate 
-              };
-              safeStore.set('portal_user_session', JSON.stringify(currentUser));
-              periksaSesiLogin();
-              renderSemuaKartu();
-            } else if (res && res.isExpired) {
-              bukaModalExpired(res.lembaga, res.username, new Date(res.expiryDate));
-            } else {
-              alertBox.textContent = (res && res.message) ? res.message : 'Verifikasi gagal! Periksa kembali data Anda.';
-              alertBox.classList.remove('d-none');
-            }
-          })
-          .withFailureHandler(function(err) {
-            btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-box-arrow-in-right me-1"></i> Verifikasi & Masuk Studio';
-            alertBox.textContent = 'Error koneksi server: ' + (err.message || err.toString());
-            alertBox.classList.remove('d-none');
-          })
-          .checkUserLogin(user, pass, key);
-      } else {
-        // Mode Fallback
-        btn.disabled = false;
-        btn.innerHTML = '<i class="bi bi-box-arrow-in-right me-1"></i> Verifikasi & Masuk Studio';
-        var expDemo = new Date();
-        expDemo.setDate(expDemo.getDate() + 90);
-        currentUser = { 
-          isLoggedIn: true, 
-          user: user, 
-          lembaga: "Sekolah Uji Coba Demo", 
-          key: key, 
-          username: user,
-          expiryDate: expDemo.toISOString() 
-        };
-        safeStore.set('portal_user_session', JSON.stringify(currentUser));
-        periksaSesiLogin();
-        renderSemuaKartu();
-      }
-    }
-
-    function logoutUser() {
-      if (confirm("Apakah Anda yakin ingin keluar dari akun?")) {
-        safeStore.remove('portal_user_session');
-        currentUser = null;
-        periksaSesiLogin();
-      }
-    }
-
-    var MAP_JENJANG = {
-      "MI":  { kelas: ["Kelas 1", "Kelas 2", "Kelas 3", "Kelas 4", "Kelas 5", "Kelas 6"], jabatan: "Kepala Madrasah" },
-      "SD":  { kelas: ["Kelas 1", "Kelas 2", "Kelas 3", "Kelas 4", "Kelas 5", "Kelas 6"], jabatan: "Kepala Sekolah" },
-      "MTS": { kelas: ["Kelas 7", "Kelas 8", "Kelas 9"], jabatan: "Kepala Madrasah" },
-      "SMP": { kelas: ["Kelas 7", "Kelas 8", "Kelas 9"], jabatan: "Kepala Sekolah" },
-      "MA":  { kelas: ["Kelas 10", "Kelas 11", "Kelas 12"], jabatan: "Kepala Madrasah" },
-      "SMA": { kelas: ["Kelas 10", "Kelas 11", "Kelas 12"], jabatan: "Kepala Sekolah" }
-    };
-
-    var jenjangAktif = "MI";
-
-    function gantiJenjang(kodeJenjang) {
-      jenjangAktif = kodeJenjang;
-      var cfg = MAP_JENJANG[kodeJenjang];
-      document.getElementById('lbl-pejabat').innerHTML = '<i class="bi bi-pen-fill text-success"></i> ' + cfg.jabatan;
-
-      var selectKelas = document.getElementById('filter-kelas');
-      selectKelas.innerHTML = '<option value="SEMUA" selected>Semua Kelas</option>';
-      cfg.kelas.forEach(function(k) { selectKelas.innerHTML += '<option value="' + k + '">' + k + '</option>'; });
-
-      inisialisasiDropdownSiswa();
-      renderSemuaKartu();
-    }
-
-    var DEFAULT_LOGO_KIRI = "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2246%22%20fill%3D%22%23059669%22%2F%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2238%22%20fill%3D%22%23facc15%22%2F%3E%3Cpolygon%20points%3D%2250%2C22%2058%2C38%2076%2C38%2062%2C49%2067%2C66%2050%2C55%2033%2C66%2038%2C49%2024%2C38%2042%2C38%22%20fill%3D%22%23059669%22%2F%3E%3C%2Fsvg%3E";
-    var DEFAULT_LOGO_KANAN = "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Cpolygon%20points%3D%2250%2C15%2085%2C35%2085%2C65%2050%2C88%2015%2C65%2015%2C35%22%20fill%3D%22%23059669%22%2F%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2248%22%20r%3D%2218%22%20fill%3D%22%23facc15%22%2F%3E%3Ctext%20x%3D%2250%22%20y%3D%2253%22%20font-size%3D%2210%22%20font-weight%3D%22bold%22%20fill%3D%22%23059669%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%22%3ELOGO%3C%2Ftext%3E%3C%2Fsvg%3E";
-
-    var logoKiriSrc = safeStore.get('portal_logo_kiri') || DEFAULT_LOGO_KIRI;
-    var logoKananSrc = safeStore.get('portal_logo_kanan') || DEFAULT_LOGO_KANAN;
-    var ttdDigitalSrc = safeStore.get('portal_ttd_digital') || '';
-    var mapFotoSiswa = {};
-
-    var infoLembaga = {
-      instansi: "KEMENTERIAN AGAMA / DINAS PENDIDIKAN",
-      madrasah: "NAMA SEKOLAH / MADRASAH",
-      alamat: "Jl. Pendidikan Nasional No. 1, Kabupaten / Kota"
-    };
-    try {
-      var savedInfo = safeStore.get('portal_info_lembaga');
-      if (savedInfo) infoLembaga = JSON.parse(savedInfo);
-    } catch(e){}
-
-    function simpanProfilLembaga() {
-      infoLembaga.instansi = document.getElementById('cfg-instansi').value;
-      infoLembaga.madrasah = document.getElementById('cfg-madrasah').value;
-      infoLembaga.alamat = document.getElementById('cfg-alamat').value;
-      safeStore.set('portal_info_lembaga', JSON.stringify(infoLembaga));
-      renderSemuaKartu();
-      bootstrap.Modal.getInstance(document.getElementById('modalLembaga')).hide();
-    }
-
-    var listSiswa = [
-      { no: 1, noPeserta: "A-001", nama: "AHMAD SYAHPUTRA", nisn: "0081234501", tglLahir: "10/05/2012", gender: "Laki-laki", kelas: "Kelas 6", token: "", mapel: "Literasi / Numerasi" },
-      { no: 2, noPeserta: "A-002", nama: "ANISA RAHMAWATI", nisn: "0081234502", tglLahir: "15/08/2012", gender: "Perempuan", kelas: "Kelas 6", token: "", mapel: "Literasi / Numerasi" },
-      { no: 3, noPeserta: "A-003", nama: "BAGAS PRATAMA", nisn: "0081234503", tglLahir: "22/11/2012", gender: "Laki-laki", kelas: "Kelas 6", token: "", mapel: "Literasi / Numerasi" },
-      { no: 4, noPeserta: "A-004", nama: "CINTA AULIA", nisn: "0081234504", tglLahir: "03/01/2012", gender: "Perempuan", kelas: "Kelas 6", token: "", mapel: "Literasi / Numerasi" },
-      { no: 5, noPeserta: "A-005", nama: "DIMAS WAHYU", nisn: "0081234505", tglLahir: "19/04/2012", gender: "Laki-laki", kelas: "Kelas 6", token: "", mapel: "Literasi / Numerasi" },
-      { no: 6, noPeserta: "A-006", nama: "FARAH AZZAHRA", nisn: "0081234506", tglLahir: "27/07/2012", gender: "Perempuan", kelas: "Kelas 6", token: "", mapel: "Literasi / Numerasi" }
-    ];
-    try {
-      var savedStudents = safeStore.get('portal_data_siswa');
-      if (savedStudents) listSiswa = JSON.parse(savedStudents);
-    } catch(e){}
-
-    function ubahWarnaTema(hex) {
-      document.getElementById('tema-warna-picker').value = hex;
-      document.documentElement.style.setProperty('--card-theme-color', hex);
-      document.documentElement.style.setProperty('--card-text-banner', hex);
-      renderSemuaKartu();
-    }
-
-    function downloadTemplateExcel() {
-      var templateData = [
-        ["No", "No Peserta", "Nama Peserta", "NISN", "Tanggal Lahir", "Jenis Kelamin", "Kelas", "Token", "Mata Pelajaran"],
-        [1, "A-001", "CONTOH NAMA SISWA", "0123456789", "12/05/2012", "Laki-laki", "Kelas 6", "", "Semua Mata Pelajaran"]
-      ];
-      var ws = XLSX.utils.aoa_to_sheet(templateData);
-      var wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "DataSiswa");
-      XLSX.writeFile(wb, "Template_Data_Siswa.xlsx");
-    }
-
-    function prosesImporExcel() {
-      var fileInput = document.getElementById('inp-excel-file');
-      if (!fileInput.files.length) { alert("Pilih file Excel terlebih dahulu!"); return; }
-
-      var file = fileInput.files[0];
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          var data = new Uint8Array(e.target.result);
-          var workbook = XLSX.read(data, {type: 'array'});
-          var sheetName = workbook.SheetNames[0];
-          var json = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {header: 1});
-
-          var siswaBaru = [];
-          for (var r = 1; r < json.length; r++) {
-            var row = json[r];
-            if (row && (row[1] || row[2])) {
-              siswaBaru.push({
-                no: row[0] || r,
-                noPeserta: row[1] ? String(row[1]).trim() : 'A-' + String(r).padStart(3, '0'),
-                nama: row[2] ? String(row[2]).trim() : 'Tanpa Nama',
-                nisn: row[3] ? String(row[3]).trim() : '-',
-                tglLahir: row[4] ? String(row[4]).trim() : '-',
-                gender: row[5] ? String(row[5]).trim() : '-',
-                kelas: row[6] ? String(row[6]).trim() : 'Semua',
-                token: row[7] ? String(row[7]).trim() : '',
-                mapel: row[8] ? String(row[8]).trim() : '-'
-              });
-            }
-          }
-
-          if (siswaBaru.length > 0) {
-            listSiswa = siswaBaru;
-            safeStore.set('portal_data_siswa', JSON.stringify(listSiswa));
-
-            var selectKelas = document.getElementById('filter-kelas');
-            var kelasDariExcel = [...new Set(siswaBaru.map(function(s){ return s.kelas; }).filter(function(k){ return k && k.trim() !== ''; }))];
-            selectKelas.innerHTML = '<option value="SEMUA" selected>Semua Kelas</option>';
-            kelasDariExcel.forEach(function(k){ selectKelas.innerHTML += '<option value="' + k + '">' + k + '</option>'; });
-
-            inisialisasiDropdownSiswa();
-            renderSemuaKartu();
-            bootstrap.Modal.getInstance(document.getElementById('modalUploadExcel')).hide();
-            alert('Sukses! ' + siswaBaru.length + ' data siswa berhasil dimuat.');
-          }
-        } catch (err) {
-          alert("Gagal membaca file Excel: " + err.message);
-        }
-      };
-      reader.readAsArrayBuffer(file);
-    }
-
-    document.getElementById('inp-ttd-pejabat').addEventListener('change', function(e) {
-      var file = e.target.files[0];
-      if (file) {
-        var reader = new FileReader();
-        reader.onload = function(evt) {
-          ttdDigitalSrc = evt.target.result;
-          safeStore.set('portal_ttd_digital', ttdDigitalSrc);
-          renderSemuaKartu();
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-
-    function hapusTtdDigital() {
-      ttdDigitalSrc = '';
-      safeStore.remove('portal_ttd_digital');
-      document.getElementById('inp-ttd-pejabat').value = '';
-      renderSemuaKartu();
-    }
-
-    document.getElementById('inp-foto-massal').addEventListener('change', function(e) {
-      var files = e.target.files;
-      var cocok = 0;
-      Array.from(files).forEach(function(file) {
-        var namaFileBersih = file.name.substring(0, file.name.lastIndexOf('.')).trim().toUpperCase();
-        var reader = new FileReader();
-        reader.onload = function(evt) {
-          mapFotoSiswa[namaFileBersih] = evt.target.result;
-          cocok++;
-          document.getElementById('foto-match-info').textContent = cocok + ' foto siswa tersinkronisasi.';
-          renderSemuaKartu();
-        };
-        reader.readAsDataURL(file);
-      });
-    });
-
-    document.getElementById('inp-logo-kiri').addEventListener('change', function(e) {
-      var file = e.target.files[0];
-      if (file) {
-        var reader = new FileReader();
-        reader.onload = function(evt) {
-          logoKiriSrc = evt.target.result;
-          safeStore.set('portal_logo_kiri', logoKiriSrc);
-          renderSemuaKartu();
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-
-    document.getElementById('inp-logo-kanan').addEventListener('change', function(e) {
-      var file = e.target.files[0];
-      if (file) {
-        var reader = new FileReader();
-        reader.onload = function(evt) {
-          logoKananSrc = evt.target.result;
-          safeStore.set('portal_logo_kanan', logoKananSrc);
-          renderSemuaKartu();
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-
-    function updateFooterTtdLangsung() {
-      var selTitimangsa = document.getElementById('select-titimangsa').value;
-      var titimangsaText = (selTitimangsa === 'KUSTOM') ? (document.getElementById('inp-titimangsa-kustom').value || 'Kota, ....................') : selTitimangsa;
-
-      var selKamad = document.getElementById('select-kamad').value;
-      var kamadText = (selKamad === 'KUSTOM') ? (document.getElementById('inp-kamad-nama').value || '......................................') : '......................................';
-
-      var selNip = document.getElementById('select-nip').value;
-      var nipText = '';
-      if (selNip === 'titik') {
-        nipText = 'NIP. ..................................';
-      } else if (selNip === 'KUSTOM') {
-        var nipVal = document.getElementById('inp-kamad-nip').value.trim();
-        if (nipVal !== '') nipText = nipVal.startsWith('NIP') ? nipVal : 'NIP. ' + nipVal;
-      }
-
-      document.querySelectorAll('.ttd-box .tempat-tgl').forEach(function(el){ el.textContent = titimangsaText; });
-      document.querySelectorAll('.ttd-box .nama-pejabat').forEach(function(el){ el.textContent = kamadText; });
-      document.querySelectorAll('.ttd-box .nip-pejabat').forEach(function(el){
-        el.textContent = nipText;
-        el.style.display = nipText ? 'block' : 'none';
-      });
-    }
-
-    function updateJudulKartuLangsung() {
-      var judul = document.getElementById('input-judul-kustom').value || 'KARTU PESERTA UJIAN';
-      document.querySelectorAll('.banner-judul').forEach(function(el){ el.textContent = judul; });
-    }
-
-    function gantiOpsiToken(val) {
-      var inpSeragam = document.getElementById('inp-token-seragam');
-      if (val === 'seragam') {
-        inpSeragam.classList.remove('d-none');
-        inpSeragam.focus();
-      } else {
-        inpSeragam.classList.add('d-none');
-      }
-      renderSemuaKartu();
-    }
-
-    function updateTokenLangsung() {
-      var valToken = document.getElementById('inp-token-seragam').value.trim();
-      document.querySelectorAll('.token-badge').forEach(function(el){
-        el.textContent = valToken || '-';
-      });
-    }
-
-    function ubahTitimangsa(val) {
-      var inp = document.getElementById('inp-titimangsa-kustom');
-      if (val === 'KUSTOM') { inp.classList.remove('d-none'); inp.focus(); } else { inp.classList.add('d-none'); }
-      updateFooterTtdLangsung();
-    }
-    function ubahKamad(val) {
-      var inp = document.getElementById('inp-kamad-nama');
-      if (val === 'KUSTOM') { inp.classList.remove('d-none'); inp.focus(); } else { inp.classList.add('d-none'); }
-      updateFooterTtdLangsung();
-    }
-    function ubahNip(val) {
-      var inp = document.getElementById('inp-kamad-nip');
-      if (val === 'KUSTOM') { inp.classList.remove('d-none'); inp.focus(); } else { inp.classList.add('d-none'); }
-      updateFooterTtdLangsung();
-    }
-
-    function inisialisasiDropdownSiswa() {
-      var selectKelas = document.getElementById('filter-kelas').value;
-      var selectSiswa = document.getElementById('filter-siswa');
-      selectSiswa.innerHTML = '<option value="">-- Semua Siswa --</option>';
-
-      var disaring = selectKelas === 'SEMUA' ? listSiswa : listSiswa.filter(function(s){ return s.kelas.includes(selectKelas) || selectKelas.includes(s.kelas); });
-      disaring.forEach(function(s){
-        selectSiswa.innerHTML += '<option value="' + s.noPeserta + '">' + s.nama + ' (' + s.noPeserta + ')</option>';
-      });
-    }
-
-    function filterSiswa() {
-      inisialisasiDropdownSiswa();
-      renderSemuaKartu();
-    }
-
-    function resetPilihSiswa() {
-      document.getElementById('filter-siswa').value = '';
-      renderSemuaKartu();
-    }
-
-    function gantiJenisKartu() {
-      var jenis = document.getElementById('pilih-jenis-kartu').value;
-      var wrap = document.getElementById('wrap-judul-kustom');
-      if (jenis === 'KUSTOM') {
-        wrap.classList.remove('d-none');
-        document.getElementById('input-judul-kustom').focus();
-      } else {
-        wrap.classList.add('d-none');
-      }
-      renderSemuaKartu();
-    }
-
-    function renderSemuaKartu() {
-      var wadah = document.getElementById('wadah-halaman');
-      wadah.innerHTML = '';
-
-      if (listSiswa.length === 0) {
-        wadah.innerHTML = '<div class="alert alert-warning text-center mx-auto my-5 p-4 no-print rounded-4 shadow-sm" style="max-width: 500px;"><i class="bi bi-exclamation-triangle fs-3 d-block mb-2 text-warning"></i>Data siswa kosong! Silakan impor via file Excel.</div>';
-        document.getElementById('stat-total-siswa').textContent = '0';
-        document.getElementById('stat-total-halaman').textContent = '0';
-        return;
-      }
-
-      var selectMika = document.getElementById('pilih-ukuran-mika');
-      var presetKelas = selectMika.value;
-      var kapasitasPerHalaman = parseInt(selectMika.selectedOptions[0].getAttribute('data-kapasitas')) || 6;
-
-      var kelasPilihan = document.getElementById('filter-kelas').value;
-      var siswaPilihan = document.getElementById('filter-siswa').value;
-      var ruangPilihan = document.getElementById('pilih-ruang').value;
-      
-      var jenisKartuSelect = document.getElementById('pilih-jenis-kartu').value;
-      var judulKartu = (jenisKartuSelect === 'KUSTOM') 
-        ? (document.getElementById('input-judul-kustom').value || 'KARTU PESERTA UJIAN')
-        : jenisKartuSelect;
-
-      var opsiToken = document.getElementById('opsi-token').value;
-      var tokenSeragam = document.getElementById('inp-token-seragam').value.trim();
-
-      var selTitimangsa = document.getElementById('select-titimangsa').value;
-      var titimangsaText = (selTitimangsa === 'KUSTOM') ? (document.getElementById('inp-titimangsa-kustom').value || 'Kota, ....................') : selTitimangsa;
-
-      var selKamad = document.getElementById('select-kamad').value;
-      var kamadText = (selKamad === 'KUSTOM') ? (document.getElementById('inp-kamad-nama').value || '......................................') : '......................................';
-
-      var selNip = document.getElementById('select-nip').value;
-      var nipText = '';
-      if (selNip === 'titik') {
-        nipText = 'NIP. ..................................';
-      } else if (selNip === 'KUSTOM') {
-        var nipVal = document.getElementById('inp-kamad-nip').value.trim();
-        if (nipVal !== '') nipText = nipVal.startsWith('NIP') ? nipVal : 'NIP. ' + nipVal;
-      }
-
-      var jabatanText = MAP_JENJANG[jenjangAktif].jabatan;
-
-      var dataFilter = listSiswa;
-      if (kelasPilihan !== 'SEMUA') {
-        dataFilter = dataFilter.filter(function(s){ return s.kelas.includes(kelasPilihan) || kelasPilihan.includes(s.kelas); });
-      }
-      if (siswaPilihan) {
-        dataFilter = dataFilter.filter(function(s){ return s.noPeserta === siswaPilihan; });
-      }
-
-      document.getElementById('stat-total-siswa').textContent = dataFilter.length;
-
-      if (dataFilter.length === 0) {
-        wadah.innerHTML = '<div class="alert alert-info text-center mx-auto my-5 p-4 no-print rounded-4 shadow-sm" style="max-width: 500px;"><i class="bi bi-info-circle fs-3 d-block mb-2 text-info"></i>Tidak ada data yang sesuai filter kelas ini.</div>';
-        document.getElementById('stat-total-halaman').textContent = '0';
-        return;
-      }
-
-      var isSingleMode = Boolean(siswaPilihan && dataFilter.length === 1);
-      var totalHalaman = isSingleMode ? 1 : Math.ceil(dataFilter.length / kapasitasPerHalaman);
-      document.getElementById('stat-total-halaman').textContent = totalHalaman;
-
-      for (var h = 0; h < totalHalaman; h++) {
-        var lembar = document.createElement('div');
-        lembar.className = 'sheet-page ' + presetKelas + (isSingleMode ? ' single-card-mode' : '');
-
-        var dataHalaman = isSingleMode ? dataFilter : dataFilter.slice(h * kapasitasPerHalaman, (h + 1) * kapasitasPerHalaman);
-        dataHalaman.forEach(function(s) {
-          var keyNo = (s.noPeserta || '').trim().toUpperCase();
-          var keyNisn = (s.nisn || '').trim().toUpperCase();
-          var fotoSiswaSrc = mapFotoSiswa[keyNo] || mapFotoSiswa[keyNisn] || null;
-
-          var boxFotoHtml = fotoSiswaSrc 
-            ? '<div class="box-foto"><img src="' + fotoSiswaSrc + '" alt="Foto"></div>'
-            : '<div class="box-foto">Foto 2x3</div>';
-
-          var ttdImgHtml = ttdDigitalSrc ? '<img src="' + ttdDigitalSrc + '" class="ttd-img-overlay" alt="TTD">' : '';
-
-          var rowTokenHtml = '';
-          if (opsiToken === 'dari_data') {
-            var tokenVal = s.token ? s.token : '-';
-            rowTokenHtml = '<tr><td class="lbl">Token</td><td class="titik">:</td><td class="val"><span class="token-badge">' + tokenVal + '</span></td></tr>';
-          } else if (opsiToken === 'seragam') {
-            var tokenVal = tokenSeragam ? tokenSeragam : '-';
-            rowTokenHtml = '<tr><td class="lbl">Token</td><td class="titik">:</td><td class="val"><span class="token-badge">' + tokenVal + '</span></td></tr>';
-          }
-
-          lembar.innerHTML += `
-            <div class="kartu-ujian">
-              <img src="${logoKananSrc}" class="kartu-watermark" alt="watermark">
-              <div class="kartu-content">
-                <div>
-                  <div class="kop-wrap">
-                    <img src="${logoKiriSrc}" class="kop-logo" alt="Logo">
-                    <div class="kop-text">
-                      <p class="instansi">${infoLembaga.instansi}</p>
-                      <p class="madrasah">${infoLembaga.madrasah}</p>
-                      <p class="alamat">${infoLembaga.alamat}</p>
-                    </div>
-                    <img src="${logoKananSrc}" class="kop-logo" alt="Logo">
-                  </div>
-
-                  <div class="banner-judul">${judulKartu}</div>
-
-                  <table class="tabel-bio">
-                    <tr>
-                      <td class="lbl">No. Peserta</td><td class="titik">:</td>
-                      <td class="val">${s.noPeserta || '-'} ${ruangPilihan ? '<span class="badge-ruang">' + ruangPilihan + '</span>' : ''}</td>
-                    </tr>
-                    <tr>
-                      <td class="lbl">Nama Peserta</td><td class="titik">:</td>
-                      <td class="val text-truncate" style="max-width: 55mm;">${s.nama}</td>
-                    </tr>
-                    <tr>
-                      <td class="lbl">NISN / JK</td><td class="titik">:</td>
-                      <td class="val">${s.nisn || '-'} / ${s.gender || '-'}</td>
-                    </tr>
-                    <tr>
-                      <td class="lbl">Tgl Lahir / Kelas</td><td class="titik">:</td>
-                      <td class="val">${s.tglLahir || '-'} / ${s.kelas || '-'}</td>
-                    </tr>
-                    ${rowTokenHtml}
-                    <tr>
-                      <td class="lbl">Mata Pelajaran</td><td class="titik">:</td>
-                      <td class="val text-truncate" style="max-width: 55mm;">${s.mapel || '-'}</td>
-                    </tr>
-                  </table>
-                </div>
-
-                <div class="footer-kartu">
-                  ${boxFotoHtml}
-                  <div class="ttd-box">
-                    <div class="tempat-tgl">${titimangsaText}</div>
-                    <div class="jabatan">${jabatanText}</div>
-                    <div class="ttd-area-relatif">${ttdImgHtml}</div>
-                    <div class="nama-pejabat">${kamadText}</div>
-                    <div class="nip-pejabat" style="${nipText ? '' : 'display:none;'}">${nipText}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          `;
-        });
-
-        wadah.appendChild(lembar);
-      }
-    }
-
-    window.addEventListener('DOMContentLoaded', function() {
-      periksaSesiLogin();
-      gantiJenjang("MI");
-    });
-  </script>
-</body>
-</html>
+  <div class="canvas-scroll-area">
+    <div id="wadah-halaman"></div>
+  </div>
+</main>
