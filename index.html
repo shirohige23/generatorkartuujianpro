@@ -428,7 +428,7 @@
     .preset-b1 .banner-judul { font-size: 4.8pt; padding: 0.3mm 0.8mm; margin-bottom: 0.5mm; }
     .preset-b1 .tabel-bio { font-size: 5.1pt; }
     .preset-b1 .tabel-bio td { padding: 0.12mm 0; }
-    .preset-b1 .tabel-bio .lbl { width: 20mm; }
+    .preset-b1 .tabel-bio .lbl { width: 23mm; }
     .preset-b1 .tabel-bio .titik { width: 1.8mm; }
     .preset-b1 .badge-ruang { font-size: 4.6pt; padding: 0.1mm 1mm; }
     .preset-b1 .token-badge { font-size: 5.2pt; padding: 0.1mm 1mm; }
@@ -451,7 +451,7 @@
     .preset-b2 .banner-judul { font-size: 6pt; padding: 0.5mm 1mm; margin-bottom: 0.8mm; }
     .preset-b2 .tabel-bio { font-size: 6.2pt; }
     .preset-b2 .tabel-bio td { padding: 0.3mm 0; }
-    .preset-b2 .tabel-bio .lbl { width: 23mm; }
+    .preset-b2 .tabel-bio .lbl { width: 27mm; }
     .preset-b2 .tabel-bio .titik { width: 2.2mm; }
     .preset-b2 .badge-ruang { font-size: 5.5pt; padding: 0.2mm 1.2mm; }
     .preset-b2 .token-badge { font-size: 6.5pt; padding: 0.2mm 1.5mm; }
@@ -474,7 +474,7 @@
     .preset-b3 .banner-judul { font-size: 7.4pt; padding: 0.8mm 1.2mm; margin-bottom: 1.2mm; }
     .preset-b3 .tabel-bio { font-size: 7.4pt; line-height: 1.25; }
     .preset-b3 .tabel-bio td { padding: 0.6mm 0; }
-    .preset-b3 .tabel-bio .lbl { width: 28mm; }
+    .preset-b3 .tabel-bio .lbl { width: 32mm; }
     .preset-b3 .tabel-bio .titik { width: 2.5mm; }
     .preset-b3 .badge-ruang { font-size: 6.8pt; padding: 0.3mm 1.5mm; }
     .preset-b3 .token-badge { font-size: 7.8pt; padding: 0.3mm 2mm; }
@@ -497,7 +497,7 @@
     .preset-b4 .banner-judul { font-size: 8.5pt; padding: 1mm 1.5mm; margin-bottom: 1.5mm; }
     .preset-b4 .tabel-bio { font-size: 8.2pt; line-height: 1.3; }
     .preset-b4 .tabel-bio td { padding: 0.8mm 0; }
-    .preset-b4 .tabel-bio .lbl { width: 34mm; }
+    .preset-b4 .tabel-bio .lbl { width: 38mm; }
     .preset-b4 .tabel-bio .titik { width: 3mm; }
     .preset-b4 .badge-ruang { font-size: 7.5pt; padding: 0.4mm 2mm; }
     .preset-b4 .token-badge { font-size: 8.8pt; padding: 0.4mm 2.5mm; }
@@ -839,8 +839,8 @@
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body py-3">
-          <div class="p-3 bg-success bg-opacity-10 border border-success border-opacity-25 rounded-3 text-success small mb-3">
-            <i class="bi bi-shield-check me-1"></i> Data Excel diproses langsung secara lokal di peramban tanpa disimpan ke server pihak ketiga.
+          <div class="p-3 bg-info bg-opacity-10 border border-info border-opacity-25 rounded-3 text-info small mb-3">
+            <i class="bi bi-magic me-1"></i> <strong>Fitur Dinamis:</strong> Anda bebas mengubah nama judul kolom D, E, F, G di Excel (misal: <em>NISN, Username/Email, Password, Kelas</em>). Label pada kartu ujian akan otomatis mengikuti judul kolom di Excel Anda!
           </div>
           <div class="mb-3">
             <button class="btn btn-dark-outline w-100 justify-content-center py-2" onclick="downloadTemplateExcel()">
@@ -1135,6 +1135,22 @@
       bootstrap.Modal.getInstance(document.getElementById('modalLembaga')).hide();
     }
 
+    // KONFIGURASI LABEL HEADER DINAMIS (MENGIKUTI BARIS PERTAMA EXCEL)
+    var headerKartu = {
+      noPeserta: "No. Peserta",
+      nama: "Nama Peserta",
+      kolomD: "NISN",
+      kolomE: "Tgl Lahir",
+      kolomF: "JK",
+      kolomG: "Kelas",
+      token: "Token",
+      mapel: "Mata Pelajaran"
+    };
+    try {
+      var savedHeaders = safeStore.get('portal_header_kartu');
+      if (savedHeaders) headerKartu = JSON.parse(savedHeaders);
+    } catch(e){}
+
     var listSiswa = [
       { no: 1, noPeserta: "A-001", nama: "AHMAD SYAHPUTRA", nisn: "0081234501", tglLahir: "10/05/2012", gender: "Laki-laki", kelas: "Kelas 6", token: "", mapel: "Literasi / Numerasi" },
       { no: 2, noPeserta: "A-002", nama: "ANISA RAHMAWATI", nisn: "0081234502", tglLahir: "15/08/2012", gender: "Perempuan", kelas: "Kelas 6", token: "", mapel: "Literasi / Numerasi" },
@@ -1179,6 +1195,23 @@
           var sheetName = workbook.SheetNames[0];
           var json = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {header: 1});
 
+          // 1. BACA JUDUL KOLOM (BARIS PERTAMA / INDEX 0) SECARA DINAMIS
+          if (json.length > 0 && json[0]) {
+            var hRow = json[0];
+            headerKartu = {
+              noPeserta: hRow[1] ? String(hRow[1]).trim() : "No. Peserta",
+              nama:      hRow[2] ? String(hRow[2]).trim() : "Nama Peserta",
+              kolomD:    hRow[3] ? String(hRow[3]).trim() : "NISN",
+              kolomE:    hRow[4] ? String(hRow[4]).trim() : "Tgl Lahir",
+              kolomF:    hRow[5] ? String(hRow[5]).trim() : "JK",
+              kolomG:    hRow[6] ? String(hRow[6]).trim() : "Kelas",
+              token:     hRow[7] ? String(hRow[7]).trim() : "Token",
+              mapel:     hRow[8] ? String(hRow[8]).trim() : "Mata Pelajaran"
+            };
+            safeStore.set('portal_header_kartu', JSON.stringify(headerKartu));
+          }
+
+          // 2. BACA DATA SISWA (BARIS KE-2 DST)
           var siswaBaru = [];
           for (var r = 1; r < json.length; r++) {
             var row = json[r];
@@ -1186,13 +1219,13 @@
               siswaBaru.push({
                 no: row[0] || r,
                 noPeserta: row[1] ? String(row[1]).trim() : 'A-' + String(r).padStart(3, '0'),
-                nama: row[2] ? String(row[2]).trim() : 'Tanpa Nama',
-                nisn: row[3] ? String(row[3]).trim() : '-',
-                tglLahir: row[4] ? String(row[4]).trim() : '-',
-                gender: row[5] ? String(row[5]).trim() : '-',
-                kelas: row[6] ? String(row[6]).trim() : 'Semua',
-                token: row[7] ? String(row[7]).trim() : '',
-                mapel: row[8] ? String(row[8]).trim() : '-'
+                nama:      row[2] ? String(row[2]).trim() : 'Tanpa Nama',
+                nisn:      row[3] ? String(row[3]).trim() : '-',
+                tglLahir:  row[4] ? String(row[4]).trim() : '-',
+                gender:    row[5] ? String(row[5]).trim() : '-',
+                kelas:     row[6] ? String(row[6]).trim() : 'Semua',
+                token:     row[7] ? String(row[7]).trim() : '',
+                mapel:     row[8] ? String(row[8]).trim() : '-'
               });
             }
           }
@@ -1203,13 +1236,13 @@
 
             var selectKelas = document.getElementById('filter-kelas');
             var kelasDariExcel = [...new Set(siswaBaru.map(function(s){ return s.kelas; }).filter(function(k){ return k && k.trim() !== ''; }))];
-            selectKelas.innerHTML = '<option value="SEMUA" selected>Semua Kelas</option>';
+            selectKelas.innerHTML = '<option value="SEMUA" selected>Semua (' + headerKartu.kolomG + ')</option>';
             kelasDariExcel.forEach(function(k){ selectKelas.innerHTML += '<option value="' + k + '">' + k + '</option>'; });
 
             inisialisasiDropdownSiswa();
             renderSemuaKartu();
             bootstrap.Modal.getInstance(document.getElementById('modalUploadExcel')).hide();
-            alert('Sukses! ' + siswaBaru.length + ' data siswa berhasil dimuat.');
+            alert('Sukses! ' + siswaBaru.length + ' data peserta berhasil dimuat dengan label kolom otomatis dari Excel Anda.');
           }
         } catch (err) {
           alert("Gagal membaca file Excel: " + err.message);
@@ -1420,6 +1453,14 @@
 
       var jabatanText = MAP_JENJANG[jenjangAktif].jabatan;
 
+      // RAKIT LABEL DINAMIS DARI HEADER EXCEL
+      var lblBaris1 = headerKartu.noPeserta || 'No. Peserta';
+      var lblBaris2 = headerKartu.nama || 'Nama Peserta';
+      var lblBaris3 = (headerKartu.kolomD || 'NISN') + ' / ' + (headerKartu.kolomF || 'JK');
+      var lblBaris4 = (headerKartu.kolomE || 'Tgl Lahir') + ' / ' + (headerKartu.kolomG || 'Kelas');
+      var lblToken  = headerKartu.token || 'Token';
+      var lblMapel  = headerKartu.mapel || 'Mata Pelajaran';
+
       var dataFilter = listSiswa;
       if (kelasPilihan !== 'SEMUA') {
         dataFilter = dataFilter.filter(function(s){ return s.kelas.includes(kelasPilihan) || kelasPilihan.includes(s.kelas); });
@@ -1459,10 +1500,10 @@
           var rowTokenHtml = '';
           if (opsiToken === 'dari_data') {
             var tokenVal = s.token ? s.token : '-';
-            rowTokenHtml = '<tr><td class="lbl">Token</td><td class="titik">:</td><td class="val"><span class="token-badge">' + tokenVal + '</span></td></tr>';
+            rowTokenHtml = '<tr><td class="lbl">' + lblToken + '</td><td class="titik">:</td><td class="val"><span class="token-badge">' + tokenVal + '</span></td></tr>';
           } else if (opsiToken === 'seragam') {
             var tokenVal = tokenSeragam ? tokenSeragam : '-';
-            rowTokenHtml = '<tr><td class="lbl">Token</td><td class="titik">:</td><td class="val"><span class="token-badge">' + tokenVal + '</span></td></tr>';
+            rowTokenHtml = '<tr><td class="lbl">' + lblToken + '</td><td class="titik">:</td><td class="val"><span class="token-badge">' + tokenVal + '</span></td></tr>';
           }
 
           lembar.innerHTML += `
@@ -1484,24 +1525,24 @@
 
                   <table class="tabel-bio">
                     <tr>
-                      <td class="lbl">No. Peserta</td><td class="titik">:</td>
+                      <td class="lbl">${lblBaris1}</td><td class="titik">:</td>
                       <td class="val">${s.noPeserta || '-'} ${ruangPilihan ? '<span class="badge-ruang">' + ruangPilihan + '</span>' : ''}</td>
                     </tr>
                     <tr>
-                      <td class="lbl">Nama Peserta</td><td class="titik">:</td>
+                      <td class="lbl">${lblBaris2}</td><td class="titik">:</td>
                       <td class="val text-truncate" style="max-width: 55mm;">${s.nama}</td>
                     </tr>
                     <tr>
-                      <td class="lbl">NISN / JK</td><td class="titik">:</td>
+                      <td class="lbl">${lblBaris3}</td><td class="titik">:</td>
                       <td class="val">${s.nisn || '-'} / ${s.gender || '-'}</td>
                     </tr>
                     <tr>
-                      <td class="lbl">Tgl Lahir / Kelas</td><td class="titik">:</td>
-                      <td class="val">${s.tglLahir || '-'} / ${s.kelas || '-'}</td>
+                      <td class="lbl">${lblBaris4}</td><td class="titik">:</td>
+                      <td class="val text-truncate" style="max-width: 55mm;">${s.tglLahir || '-'} / ${s.kelas || '-'}</td>
                     </tr>
                     ${rowTokenHtml}
                     <tr>
-                      <td class="lbl">Mata Pelajaran</td><td class="titik">:</td>
+                      <td class="lbl">${lblMapel}</td><td class="titik">:</td>
                       <td class="val text-truncate" style="max-width: 55mm;">${s.mapel || '-'}</td>
                     </tr>
                   </table>
