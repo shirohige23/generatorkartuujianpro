@@ -410,22 +410,43 @@
       overflow: hidden;
     }
     .box-foto img { width: 100%; height: 100%; object-fit: cover; }
-    .ttd-box { text-align: center; line-height: 1.15; position: relative; }
+
+    /* AREA TANDA TANGAN & STEMPEL YANG PROPORSIONAL & SALING MENIMPA */
+    .ttd-box { text-align: center; line-height: 1.15; position: relative; min-width: 34mm; }
     .ttd-box .tempat-tgl { color: #334155; }
     .ttd-box .jabatan { font-weight: 600; }
-    .ttd-area-relatif { position: relative; display: flex; align-items: center; justify-content: center; }
+    .ttd-area-relatif { 
+      position: relative; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      overflow: visible !important;
+    }
     .ttd-img-overlay {
       position: absolute;
-      top: 50%; left: 50%;
+      top: 50%; 
+      left: 55%;
       transform: translate(-50%, -50%);
-      max-height: 100%; max-width: 90%;
       object-fit: contain;
       pointer-events: none;
       z-index: 2;
+      mix-blend-mode: multiply;
     }
-    .ttd-box .nama-pejabat { font-weight: bold; text-decoration: underline; }
-    .ttd-box .nip-pejabat { color: #334155; }
+    .stempel-img-overlay {
+      position: absolute;
+      top: 48%;
+      left: 18%;
+      transform: translate(-50%, -50%) rotate(-6deg);
+      object-fit: contain;
+      pointer-events: none;
+      z-index: 3;
+      opacity: 0.88;
+      mix-blend-mode: multiply;
+    }
+    .ttd-box .nama-pejabat { font-weight: bold; text-decoration: underline; position: relative; z-index: 4; }
+    .ttd-box .nip-pejabat { color: #334155; position: relative; z-index: 4; }
 
+    /* PRESET B1 (10 KARTU) */
     .preset-b1 { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 54.5mm; gap: 2mm; }
     .preset-b1 .kartu-ujian { width: 100%; height: 54.5mm; padding: 1.5mm 2.2mm 1.2mm 2.2mm; }
     .preset-b1 .kartu-watermark { width: 28mm; height: 28mm; }
@@ -443,12 +464,16 @@
     .preset-b1 .token-badge { font-size: 5.2pt; padding: 0.1mm 1mm; }
     .preset-b1 .footer-kartu { font-size: 4.4pt; margin-top: 0.3mm; }
     .preset-b1 .box-foto { width: 12mm; height: 15mm; font-size: 4.2pt; }
-    .preset-b1 .ttd-area-relatif { height: 5mm; }
+    .preset-b1 .ttd-box { min-width: 26mm; }
+    .preset-b1 .ttd-area-relatif { height: 5.5mm; }
+    .preset-b1 .ttd-img-overlay { width: 17mm; height: 9.5mm; }
+    .preset-b1 .stempel-img-overlay { width: 11mm; height: 11mm; }
     .preset-b1 .ttd-box .tempat-tgl { font-size: 4.3pt; }
     .preset-b1 .ttd-box .jabatan { font-size: 4.5pt; }
     .preset-b1 .ttd-box .nama-pejabat { font-size: 4.6pt; }
     .preset-b1 .ttd-box .nip-pejabat { font-size: 4.2pt; }
 
+    /* PRESET B2 (8 KARTU) */
     .preset-b2 { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 68mm; gap: 2.5mm; }
     .preset-b2 .kartu-ujian { width: 100%; height: 68mm; padding: 2mm 3mm; }
     .preset-b2 .kartu-watermark { width: 36mm; height: 36mm; }
@@ -466,12 +491,16 @@
     .preset-b2 .token-badge { font-size: 6.5pt; padding: 0.2mm 1.5mm; }
     .preset-b2 .footer-kartu { font-size: 5.5pt; margin-top: 0.5mm; }
     .preset-b2 .box-foto { width: 16mm; height: 21mm; font-size: 5.2pt; }
-    .preset-b2 .ttd-area-relatif { height: 6.5mm; }
+    .preset-b2 .ttd-box { min-width: 30mm; }
+    .preset-b2 .ttd-area-relatif { height: 7.5mm; }
+    .preset-b2 .ttd-img-overlay { width: 22mm; height: 12.5mm; }
+    .preset-b2 .stempel-img-overlay { width: 14mm; height: 14mm; }
     .preset-b2 .ttd-box .tempat-tgl { font-size: 5.4pt; }
     .preset-b2 .ttd-box .jabatan { font-size: 5.6pt; }
     .preset-b2 .ttd-box .nama-pejabat { font-size: 5.8pt; }
     .preset-b2 .ttd-box .nip-pejabat { font-size: 5.2pt; }
 
+    /* PRESET B3 (6 KARTU - BEST) */
     .preset-b3 { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 91mm; gap: 3mm; }
     .preset-b3 .kartu-ujian { width: 100%; height: 91mm; padding: 2.8mm 3.5mm; border-width: 2.2px; }
     .preset-b3 .kartu-watermark { width: 48mm; height: 48mm; }
@@ -489,12 +518,16 @@
     .preset-b3 .token-badge { font-size: 7.8pt; padding: 0.3mm 2mm; }
     .preset-b3 .footer-kartu { font-size: 6.8pt; margin-top: 1mm; }
     .preset-b3 .box-foto { width: 20mm; height: 27mm; font-size: 6.5pt; }
-    .preset-b3 .ttd-area-relatif { height: 7mm; }
+    .preset-b3 .ttd-box { min-width: 36mm; }
+    .preset-b3 .ttd-area-relatif { height: 9.5mm; }
+    .preset-b3 .ttd-img-overlay { width: 28mm; height: 16mm; }
+    .preset-b3 .stempel-img-overlay { width: 17.5mm; height: 17.5mm; }
     .preset-b3 .ttd-box .tempat-tgl { font-size: 6.8pt; }
     .preset-b3 .ttd-box .jabatan { font-size: 7.2pt; }
     .preset-b3 .ttd-box .nama-pejabat { font-size: 7.5pt; }
     .preset-b3 .ttd-box .nip-pejabat { font-size: 6.6pt; }
 
+    /* PRESET B4 (3 KARTU - JUMBO) */
     .preset-b4 { grid-template-columns: 1fr; grid-auto-rows: 91mm; gap: 3.5mm; width: 145mm !important; }
     .preset-b4 .kartu-ujian { width: 100%; height: 91mm; padding: 3mm 4mm; border-width: 2.5px; }
     .preset-b4 .kartu-watermark { width: 55mm; height: 55mm; }
@@ -512,7 +545,10 @@
     .preset-b4 .token-badge { font-size: 8.8pt; padding: 0.4mm 2.5mm; }
     .preset-b4 .footer-kartu { font-size: 7.5pt; margin-top: 1mm; }
     .preset-b4 .box-foto { width: 23mm; height: 30mm; font-size: 7.2pt; }
-    .preset-b4 .ttd-area-relatif { height: 10mm; }
+    .preset-b4 .ttd-box { min-width: 42mm; }
+    .preset-b4 .ttd-area-relatif { height: 11mm; }
+    .preset-b4 .ttd-img-overlay { width: 34mm; height: 19mm; }
+    .preset-b4 .stempel-img-overlay { width: 21mm; height: 21mm; }
     .preset-b4 .ttd-box .tempat-tgl { font-size: 7.5pt; }
     .preset-b4 .ttd-box .jabatan { font-size: 8pt; }
     .preset-b4 .ttd-box .nama-pejabat { font-size: 8.5pt; }
@@ -769,7 +805,7 @@
             <i class="bi bi-file-earmark-spreadsheet text-success"></i> Impor Excel Siswa
           </button>
           <button class="btn btn-dark-outline justify-content-center" data-bs-toggle="modal" data-bs-target="#modalMedia">
-            <i class="bi bi-images text-warning"></i> Upload Logo, Foto &amp; TTD
+            <i class="bi bi-images text-warning"></i> Upload Logo, TTD, Stempel &amp; Foto
           </button>
         </div>
       </div>
@@ -844,7 +880,7 @@
     </div>
   </div>
 
-  <!-- MODAL IMPOR EXCEL SISWA (DILENGKAPI PROGRESS BAR ANIMASI HITUNGAN DATA) -->
+  <!-- MODAL IMPOR EXCEL SISWA -->
   <div class="modal fade no-print" id="modalUploadExcel" data-bs-backdrop="static" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content auth-card p-4">
@@ -866,7 +902,7 @@
             <input type="file" id="inp-excel-file" accept=".xlsx, .xls" class="form-control input-dark">
           </div>
 
-          <!-- INDIKATOR PROGRESS IMPORT (ANIMASI MENUNGGU 1/10, 2/10, DST) -->
+          <!-- INDIKATOR PROGRESS IMPORT -->
           <div id="wrap-progress-excel" class="mt-3 p-3 rounded-3 d-none" style="background: #1e293b; border: 1px solid #334155;">
             <div class="d-flex justify-content-between align-items-center mb-1">
               <span class="small fw-semibold text-warning" id="txt-progress-status">
@@ -887,12 +923,12 @@
     </div>
   </div>
 
-  <!-- MODAL MEDIA -->
+  <!-- MODAL MEDIA (LOGO, TTD, STEMPEL & FOTO) -->
   <div class="modal fade no-print" id="modalMedia" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content auth-card p-4">
         <div class="modal-header border-bottom border-secondary border-opacity-25 pb-3">
-          <h6 class="modal-title fw-bold text-white"><i class="bi bi-images text-warning me-2"></i>Kelola Logo, Tanda Tangan &amp; Foto Siswa</h6>
+          <h6 class="modal-title fw-bold text-white"><i class="bi bi-images text-warning me-2"></i>Kelola Logo, TTD, Stempel &amp; Foto Siswa</h6>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body py-3">
@@ -907,13 +943,32 @@
               <input type="file" id="inp-logo-kanan" accept="image/*" class="form-control input-dark form-control-sm">
             </div>
           </div>
+
           <hr class="border-secondary opacity-25 my-3">
-          <h6 class="fw-bold small text-info mb-2"><i class="bi bi-pen me-1"></i> 2. Tanda Tangan Digital (PNG Transparan)</h6>
-          <div class="mb-3">
-            <input type="file" id="inp-ttd-pejabat" accept="image/png, image/jpeg" class="form-control input-dark form-control-sm">
-            <button class="btn btn-link text-danger btn-sm p-0 mt-1 text-decoration-none" onclick="hapusTtdDigital()"><i class="bi bi-trash3 me-1"></i>Hapus Tanda Tangan</button>
+
+          <h6 class="fw-bold small text-info mb-2"><i class="bi bi-pen me-1"></i> 2. Tanda Tangan &amp; Stempel Lembaga</h6>
+          <div class="row g-2 mb-2">
+            <div class="col-6">
+              <label class="sidebar-label">Tanda Tangan Digital</label>
+              <input type="file" id="inp-ttd-pejabat" accept="image/png, image/jpeg" class="form-control input-dark form-control-sm">
+              <button class="btn btn-link text-danger btn-sm p-0 mt-1 text-decoration-none" style="font-size: 0.72rem;" onclick="hapusTtdDigital()">
+                <i class="bi bi-trash3 me-1"></i>Hapus TTD
+              </button>
+            </div>
+            <div class="col-6">
+              <label class="sidebar-label">Stempel (Menimpa TTD)</label>
+              <input type="file" id="inp-stempel-lembaga" accept="image/png, image/jpeg" class="form-control input-dark form-control-sm">
+              <button class="btn btn-link text-danger btn-sm p-0 mt-1 text-decoration-none" style="font-size: 0.72rem;" onclick="hapusStempelDigital()">
+                <i class="bi bi-trash3 me-1"></i>Hapus Stempel
+              </button>
+            </div>
           </div>
+          <small class="text-muted d-block mb-3" style="font-size: 0.7rem;">
+            *Tips: Gunakan PNG transparan atau foto di atas kertas putih polos (latar putih otomatis menyatu transparan).
+          </small>
+
           <hr class="border-secondary opacity-25 my-3">
+
           <h6 class="fw-bold small text-info mb-1"><i class="bi bi-person-bounding-box me-1"></i> 3. Upload Foto Massal Siswa</h6>
           <p class="text-muted small mb-2" style="font-size: 0.73rem;">
             Pilih sekaligus puluhan foto (JPG/PNG). Beri nama file foto sesuai <strong>Nomor Peserta</strong> (misal: <code>A-001.jpg</code>) atau <strong>NISN</strong> siswa.
@@ -1142,6 +1197,7 @@
     var logoKiriSrc = safeStore.get('portal_logo_kiri') || DEFAULT_LOGO_KIRI;
     var logoKananSrc = safeStore.get('portal_logo_kanan') || DEFAULT_LOGO_KANAN;
     var ttdDigitalSrc = safeStore.get('portal_ttd_digital') || '';
+    var stempelDigitalSrc = safeStore.get('portal_stempel_digital') || '';
     var mapFotoSiswa = {};
 
     var infoLembaga = {
@@ -1209,7 +1265,6 @@
       XLSX.writeFile(wb, "Template_Data_Siswa.xlsx");
     }
 
-    // PROSES IMPOR EXCEL DENGAN INDIKATOR PROGRESS BAR BERTAHAP (1/10, 2/10, DST)
     function prosesImporExcel() {
       var fileInput = document.getElementById('inp-excel-file');
       if (!fileInput.files.length) { alert("Pilih file Excel terlebih dahulu!"); return; }
@@ -1222,13 +1277,11 @@
       var txtAngka = document.getElementById('txt-progress-angka');
       var barProgress = document.getElementById('bar-progress-excel');
 
-      // Kunci seluruh tombol aksi agar tidak diklik ganda
       btnImpor.disabled = true;
       btnTutup.disabled = true;
       if (btnX) btnX.disabled = true;
       btnImpor.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Memproses...';
 
-      // Tampilkan kotak progress bar
       wrapProgress.classList.remove('d-none');
       txtStatus.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Membaca file Excel...';
       txtAngka.textContent = '0 / 0';
@@ -1244,7 +1297,6 @@
           var sheetName = workbook.SheetNames[0];
           var json = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {header: 1});
 
-          // 1. BACA JUDUL KOLOM (BARIS PERTAMA / INDEX 0) SECARA DINAMIS
           if (json.length > 0 && json[0]) {
             var hRow = json[0];
             headerKartu = {
@@ -1260,7 +1312,6 @@
             safeStore.set('portal_header_kartu', JSON.stringify(headerKartu));
           }
 
-          // Saring baris valid terlebih dahulu agar hitungan total akurat
           var barisValid = [];
           for (var r = 1; r < json.length; r++) {
             if (json[r] && (json[r][1] || json[r][2])) {
@@ -1275,7 +1326,6 @@
 
           var siswaBaru = [];
           var indexSekarang = 0;
-          // Atur ukuran batch agar animasi hitungan terlihat jelas dan ringan di browser
           var ukuranBatch = totalData > 200 ? 15 : (totalData > 50 ? 5 : 1);
 
           txtStatus.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Mengunggah data...';
@@ -1303,10 +1353,9 @@
             barProgress.style.width = persen + '%';
 
             if (indexSekarang < totalData) {
-              // Jeda mikro 25ms agar animasi angka & bilah hijau bergerak mulus
               setTimeout(prosesBertahap, 25);
             } else {
-              txtStatus.innerHTML = '<i class="bi bi-check-circle-fill text-success me-1"></i>Menyusun pratinjau kartu...';
+              txtStatus.innerHTML = '<i class="bi bi-check-circle-fill text-success me-1"></i>Selesai! ' + totalData + ' data dimuat.';
               
               setTimeout(function() {
                 listSiswa = siswaBaru;
@@ -1320,7 +1369,6 @@
                 inisialisasiDropdownSiswa();
                 renderSemuaKartu();
 
-                // Reset tombol & tutup modal
                 btnImpor.disabled = false;
                 btnTutup.disabled = false;
                 if (btnX) btnX.disabled = false;
@@ -1329,8 +1377,7 @@
                 fileInput.value = '';
 
                 bootstrap.Modal.getInstance(document.getElementById('modalUploadExcel')).hide();
-                alert('Sukses! ' + siswaBaru.length + ' data peserta berhasil dimuat.');
-              }, 350);
+              }, 700);
             }
           }
 
@@ -1349,6 +1396,7 @@
       reader.readAsArrayBuffer(file);
     }
 
+    // UPLOAD TANDA TANGAN
     document.getElementById('inp-ttd-pejabat').addEventListener('change', function(e) {
       var file = e.target.files[0];
       if (file) {
@@ -1366,6 +1414,27 @@
       ttdDigitalSrc = '';
       safeStore.remove('portal_ttd_digital');
       document.getElementById('inp-ttd-pejabat').value = '';
+      renderSemuaKartu();
+    }
+
+    // UPLOAD STEMPEL DIGITAL (MENIMPA TTD)
+    document.getElementById('inp-stempel-lembaga').addEventListener('change', function(e) {
+      var file = e.target.files[0];
+      if (file) {
+        var reader = new FileReader();
+        reader.onload = function(evt) {
+          stempelDigitalSrc = evt.target.result;
+          safeStore.set('portal_stempel_digital', stempelDigitalSrc);
+          renderSemuaKartu();
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    function hapusStempelDigital() {
+      stempelDigitalSrc = '';
+      safeStore.remove('portal_stempel_digital');
+      document.getElementById('inp-stempel-lembaga').value = '';
       renderSemuaKartu();
     }
 
@@ -1551,7 +1620,6 @@
 
       var jabatanText = MAP_JENJANG[jenjangAktif].jabatan;
 
-      // RAKIT LABEL DINAMIS DARI HEADER EXCEL
       var lblBaris1 = headerKartu.noPeserta || 'No. Peserta';
       var lblBaris2 = headerKartu.nama || 'Nama Peserta';
       var lblBaris3 = (headerKartu.kolomD || 'NISN') + ' / ' + (headerKartu.kolomF || 'JK');
@@ -1594,6 +1662,7 @@
             : '<div class="box-foto">Foto 2x3</div>';
 
           var ttdImgHtml = ttdDigitalSrc ? '<img src="' + ttdDigitalSrc + '" class="ttd-img-overlay" alt="TTD">' : '';
+          var stempelImgHtml = stempelDigitalSrc ? '<img src="' + stempelDigitalSrc + '" class="stempel-img-overlay" alt="Stempel">' : '';
 
           var rowTokenHtml = '';
           if (opsiToken === 'dari_data') {
@@ -1651,7 +1720,10 @@
                   <div class="ttd-box">
                     <div class="tempat-tgl">${titimangsaText}</div>
                     <div class="jabatan">${jabatanText}</div>
-                    <div class="ttd-area-relatif">${ttdImgHtml}</div>
+                    <div class="ttd-area-relatif">
+                      ${ttdImgHtml}
+                      ${stempelImgHtml}
+                    </div>
                     <div class="nama-pejabat">${kamadText}</div>
                     <div class="nip-pejabat" style="${nipText ? '' : 'display:none;'}">${nipText}</div>
                   </div>
