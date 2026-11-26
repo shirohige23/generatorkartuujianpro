@@ -22,6 +22,7 @@
       --card-text-banner: #047857;
       --text-light: #f8fafc;
       --text-muted-dark: #94a3b8;
+      --font-scale: 1;
     }
 
     * {
@@ -467,7 +468,7 @@
     .ttd-box .nama-pejabat { font-weight: bold; text-decoration: underline; position: relative; z-index: 4; }
     .ttd-box .nip-pejabat { color: #334155; position: relative; z-index: 4; }
 
-    /* PRESET B1 (10 KARTU) */
+    /* PRESET B1 (10 KARTU) - MENDUKUNG SKALA FONT DINAMIS */
     .preset-b1 { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 54.5mm; gap: 2mm; }
     .preset-b1 .kartu-ujian { width: 100%; height: 54.5mm; padding: 1.5mm 2.2mm 1.2mm 2.2mm; }
     .preset-b1 .kartu-watermark { width: 28mm; height: 28mm; }
@@ -476,13 +477,13 @@
     .preset-b1 .kop-text .instansi { font-size: 5pt; }
     .preset-b1 .kop-text .madrasah { font-size: 6.8pt; }
     .preset-b1 .kop-text .alamat { font-size: 3.8pt; }
-    .preset-b1 .banner-judul { font-size: 4.8pt; padding: 0.3mm 0.8mm; margin-bottom: 0.5mm; }
-    .preset-b1 .tabel-bio { font-size: 5.1pt; }
+    .preset-b1 .banner-judul { font-size: calc(4.8pt * var(--font-scale)); padding: 0.3mm 0.8mm; margin-bottom: 0.5mm; }
+    .preset-b1 .tabel-bio { font-size: calc(5.1pt * var(--font-scale)); }
     .preset-b1 .tabel-bio td { padding: 0.12mm 0; }
     .preset-b1 .tabel-bio .lbl { width: 23mm; }
     .preset-b1 .tabel-bio .titik { width: 1.8mm; }
-    .preset-b1 .badge-ruang { font-size: 4.6pt; padding: 0.1mm 1mm; }
-    .preset-b1 .token-badge { font-size: 5.2pt; padding: 0.1mm 1mm; }
+    .preset-b1 .badge-ruang { font-size: calc(4.6pt * var(--font-scale)); padding: 0.1mm 1mm; }
+    .preset-b1 .token-badge { font-size: calc(5.2pt * var(--font-scale)); padding: 0.1mm 1mm; }
     .preset-b1 .footer-kartu { font-size: 4.4pt; margin-top: 0.3mm; }
     .preset-b1 .box-foto { width: 12mm; height: 15mm; font-size: 4.2pt; }
     .preset-b1 .ttd-box { min-width: 26mm; }
@@ -503,13 +504,13 @@
     .preset-b2 .kop-text .instansi { font-size: 6pt; }
     .preset-b2 .kop-text .madrasah { font-size: 8.5pt; }
     .preset-b2 .kop-text .alamat { font-size: 4.8pt; }
-    .preset-b2 .banner-judul { font-size: 6pt; padding: 0.5mm 1mm; margin-bottom: 0.8mm; }
-    .preset-b2 .tabel-bio { font-size: 6.2pt; }
+    .preset-b2 .banner-judul { font-size: calc(6pt * var(--font-scale)); padding: 0.5mm 1mm; margin-bottom: 0.8mm; }
+    .preset-b2 .tabel-bio { font-size: calc(6.2pt * var(--font-scale)); }
     .preset-b2 .tabel-bio td { padding: 0.3mm 0; }
     .preset-b2 .tabel-bio .lbl { width: 27mm; }
     .preset-b2 .tabel-bio .titik { width: 2.2mm; }
-    .preset-b2 .badge-ruang { font-size: 5.5pt; padding: 0.2mm 1.2mm; }
-    .preset-b2 .token-badge { font-size: 6.5pt; padding: 0.2mm 1.5mm; }
+    .preset-b2 .badge-ruang { font-size: calc(5.5pt * var(--font-scale)); padding: 0.2mm 1.2mm; }
+    .preset-b2 .token-badge { font-size: calc(6.5pt * var(--font-scale)); padding: 0.2mm 1.5mm; }
     .preset-b2 .footer-kartu { font-size: 5.5pt; margin-top: 0.5mm; }
     .preset-b2 .box-foto { width: 16mm; height: 21mm; font-size: 5.2pt; }
     .preset-b2 .ttd-box { min-width: 30mm; }
@@ -530,13 +531,13 @@
     .preset-b3 .kop-text .instansi { font-size: 7.2pt; }
     .preset-b3 .kop-text .madrasah { font-size: 10.5pt; }
     .preset-b3 .kop-text .alamat { font-size: 5.6pt; }
-    .preset-b3 .banner-judul { font-size: 7.4pt; padding: 0.8mm 1.2mm; margin-bottom: 1.2mm; }
-    .preset-b3 .tabel-bio { font-size: 7.4pt; line-height: 1.25; }
+    .preset-b3 .banner-judul { font-size: calc(7.4pt * var(--font-scale)); padding: 0.8mm 1.2mm; margin-bottom: 1.2mm; }
+    .preset-b3 .tabel-bio { font-size: calc(7.4pt * var(--font-scale)); line-height: 1.25; }
     .preset-b3 .tabel-bio td { padding: 0.6mm 0; }
     .preset-b3 .tabel-bio .lbl { width: 32mm; }
     .preset-b3 .tabel-bio .titik { width: 2.5mm; }
-    .preset-b3 .badge-ruang { font-size: 6.8pt; padding: 0.3mm 1.5mm; }
-    .preset-b3 .token-badge { font-size: 7.8pt; padding: 0.3mm 2mm; }
+    .preset-b3 .badge-ruang { font-size: calc(6.8pt * var(--font-scale)); padding: 0.3mm 1.5mm; }
+    .preset-b3 .token-badge { font-size: calc(7.8pt * var(--font-scale)); padding: 0.3mm 2mm; }
     .preset-b3 .footer-kartu { font-size: 6.8pt; margin-top: 1mm; }
     .preset-b3 .box-foto { width: 20mm; height: 27mm; font-size: 6.5pt; }
     .preset-b3 .ttd-box { min-width: 36mm; }
@@ -557,13 +558,13 @@
     .preset-b4 .kop-text .instansi { font-size: 8pt; }
     .preset-b4 .kop-text .madrasah { font-size: 12pt; }
     .preset-b4 .kop-text .alamat { font-size: 6.5pt; }
-    .preset-b4 .banner-judul { font-size: 8.5pt; padding: 1mm 1.5mm; margin-bottom: 1.5mm; }
-    .preset-b4 .tabel-bio { font-size: 8.2pt; line-height: 1.3; }
+    .preset-b4 .banner-judul { font-size: calc(8.5pt * var(--font-scale)); padding: 1mm 1.5mm; margin-bottom: 1.5mm; }
+    .preset-b4 .tabel-bio { font-size: calc(8.2pt * var(--font-scale)); line-height: 1.3; }
     .preset-b4 .tabel-bio td { padding: 0.8mm 0; }
     .preset-b4 .tabel-bio .lbl { width: 38mm; }
     .preset-b4 .tabel-bio .titik { width: 3mm; }
-    .preset-b4 .badge-ruang { font-size: 7.5pt; padding: 0.4mm 2mm; }
-    .preset-b4 .token-badge { font-size: 8.8pt; padding: 0.4mm 2.5mm; }
+    .preset-b4 .badge-ruang { font-size: calc(7.5pt * var(--font-scale)); padding: 0.4mm 2mm; }
+    .preset-b4 .token-badge { font-size: calc(8.8pt * var(--font-scale)); padding: 0.4mm 2.5mm; }
     .preset-b4 .footer-kartu { font-size: 7.5pt; margin-top: 1mm; }
     .preset-b4 .box-foto { width: 23mm; height: 30mm; font-size: 7.2pt; }
     .preset-b4 .ttd-box { min-width: 42mm; }
@@ -748,6 +749,20 @@
             </select>
           </div>
 
+          <!-- PENGATURAN UKURAN FONT KUSTOM -->
+          <div class="mb-2">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <label class="sidebar-label mb-0"><i class="bi bi-fonts text-warning"></i> Ukuran Font Biodata</label>
+              <span id="lbl-font-scale" class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 font-monospace" style="font-size: 0.7rem;">100%</span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" class="btn btn-dark-outline py-1 px-2" onclick="geserSkalaFont(-5)" title="Perkecil Font"><i class="bi bi-dash"></i></button>
+              <input type="range" id="range-font-scale" class="form-range flex-grow-1" min="80" max="145" step="5" value="100" oninput="ubahSkalaFont(this.value)">
+              <button type="button" class="btn btn-dark-outline py-1 px-2" onclick="geserSkalaFont(5)" title="Perbesar Font"><i class="bi bi-plus"></i></button>
+              <button type="button" class="btn btn-dark-outline py-1 px-2" onclick="ubahSkalaFont(100)" title="Reset 100%" style="font-size: 0.7rem;">Reset</button>
+            </div>
+          </div>
+
           <div class="mb-2">
             <label class="sidebar-label">Judul Kartu Ujian</label>
             <select id="pilih-jenis-kartu" class="form-select select-dark" onchange="gantiJenisKartu()">
@@ -844,7 +859,6 @@
               <span id="badge-expiry-countdown" class="badge bg-success-subtle text-success border border-success-subtle rounded-pill" style="font-size: 0.68rem;">
                 <i class="bi bi-patch-check-fill me-1"></i>LISENSI AKTIF
               </span>
-              <!-- TOMBOL WHATSAPP OTOMATIS MUNCUL SAAT MASA AKTIF <= 3 HARI -->
               <a href="#" id="btn-wa-topbar-renew" target="_blank" class="btn-wa-topbar d-none" title="Perpanjang Masa Aktif via WhatsApp Mas Admin">
                 <i class="bi bi-whatsapp"></i> Hubungi Admin
               </a>
@@ -915,7 +929,7 @@
         </div>
         <div class="modal-body py-3">
           <div class="p-3 bg-info bg-opacity-10 border border-info border-opacity-25 rounded-3 text-info small mb-3">
-            <i class="bi bi-magic me-1"></i> <strong>Fitur Dinamis:</strong> Anda bebas mengubah nama judul kolom D, E, F, G di Excel (misal: <em>NISN, Username/Email, Password, Kelas</em>). Label pada kartu ujian akan otomatis mengikuti judul kolom di Excel Anda!
+            <i class="bi bi-magic me-1"></i> <strong>Smart Auto-Detect:</strong> Aplikasi otomatis mengenali kolom <em>No Peserta, Nama, Kelas, NISN, Tgl Lahir, JK, Token, Mapel</em> meski urutan kolom Excel Anda diubah-ubah! Jika kolom dikosongkan/dihapus, barisnya otomatis disembunyikan.
           </div>
           <div class="mb-3">
             <button class="btn btn-dark-outline w-100 justify-content-center py-2" onclick="downloadTemplateExcel()">
@@ -1013,7 +1027,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
-    var URL_WEB_APP_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbxBZv2o39CnkwAaBs7V69I8O1GaosFtE0GOO9lFXZ20tpXJMb8fV9mIi1zJ06g3cWyA/exec";
+    var URL_WEB_APP_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbxBZv2o39CnkwAaBs7V69I8O1GaosFtE0GOO9IFXZ20tpXJMb8fV9mli1zJ06g3cWyA/exec";
     var NOMOR_WA_ADMIN = "62895367798565";
     var NAMA_ADMIN = "Mas Admin";
 
@@ -1047,6 +1061,26 @@
         try { localStorage.removeItem(key); } catch(e) { delete window['_mem_' + key]; }
       }
     };
+
+    // PENGATURAN SKALA FONT BIODATA KARTU
+    var fontScalePersen = parseInt(safeStore.get('portal_font_scale')) || 100;
+
+    function ubahSkalaFont(persenVal) {
+      var val = Math.max(80, Math.min(145, parseInt(persenVal) || 100));
+      fontScalePersen = val;
+      safeStore.set('portal_font_scale', val);
+
+      var rangeEl = document.getElementById('range-font-scale');
+      var lblEl = document.getElementById('lbl-font-scale');
+      if (rangeEl) rangeEl.value = val;
+      if (lblEl) lblEl.textContent = val + '%';
+
+      document.documentElement.style.setProperty('--font-scale', (val / 100).toFixed(2));
+    }
+
+    function geserSkalaFont(delta) {
+      ubahSkalaFont(fontScalePersen + delta);
+    }
 
     var currentUser = null;
     try {
@@ -1093,7 +1127,6 @@
       var btnWaTopbar = document.getElementById('btn-wa-topbar-renew');
       var tglFormatted = expDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
 
-      // Tampilkan tombol Hubungi Admin (WA) jika masa aktif <= 3 hari
       if (btnWaTopbar) {
         if (sisaHari <= 3) {
           var pesanWA = encodeURIComponent(
@@ -1229,8 +1262,14 @@
       document.getElementById('lbl-pejabat').innerHTML = '<i class="bi bi-pen-fill text-success"></i> ' + cfg.jabatan;
 
       var selectKelas = document.getElementById('filter-kelas');
+      var kelasUnikData = [...new Set(listSiswa.map(function(s){ return s.kelas; }).filter(function(k){ return k && k.trim() !== '' && k !== 'Semua'; }))];
+      
       selectKelas.innerHTML = '<option value="SEMUA" selected>Semua Kelas</option>';
-      cfg.kelas.forEach(function(k) { selectKelas.innerHTML += '<option value="' + k + '">' + k + '</option>'; });
+      if (kelasUnikData.length > 0) {
+        kelasUnikData.forEach(function(k) { selectKelas.innerHTML += '<option value="' + k + '">' + k + '</option>'; });
+      } else {
+        cfg.kelas.forEach(function(k) { selectKelas.innerHTML += '<option value="' + k + '">' + k + '</option>'; });
+      }
 
       inisialisasiDropdownSiswa();
       renderSemuaKartu();
@@ -1272,7 +1311,8 @@
       kolomF: "JK",
       kolomG: "Kelas",
       token: "Token",
-      mapel: "Mata Pelajaran"
+      mapel: "Mata Pelajaran",
+      adaMapel: true
     };
     try {
       var savedHeaders = safeStore.get('portal_header_kartu');
@@ -1310,6 +1350,57 @@
       XLSX.writeFile(wb, "Template_Data_Siswa.xlsx");
     }
 
+    // PEMETAAN KOLOM PINTAR BERDASARKAN NAMA HEADER EXCEL
+    function deteksiPetaKolomExcel(hRow) {
+      var map = {
+        no: -1,
+        noPeserta: -1,
+        nama: -1,
+        kelas: -1,
+        kolomD: -1,
+        kolomE: -1,
+        kolomF: -1,
+        token: -1,
+        mapel: -1
+      };
+
+      var sisaKolomBiodata = [];
+
+      for (var c = 0; c < hRow.length; c++) {
+        var rawH = hRow[c] ? String(hRow[c]).trim() : "";
+        if (!rawH) continue;
+        var low = rawH.toLowerCase();
+
+        if (low === "no" || low === "no." || low === "nomor" || low === "urut") {
+          map.no = c;
+        } else if (low.includes("no peserta") || low.includes("no. peserta") || low.includes("nomor peserta") || low.includes("id peserta") || low.includes("no ujian")) {
+          map.noPeserta = c;
+        } else if (low.includes("nama")) {
+          map.nama = c;
+        } else if (low.includes("kelas") || low.includes("rombel") || low.includes("tingkat")) {
+          map.kelas = c;
+        } else if (low.includes("token")) {
+          map.token = c;
+        } else if (low.includes("mapel") || low.includes("mata pelajaran") || low.includes("pelajaran") || low.includes("sesi") || low.includes("ruang")) {
+          map.mapel = c;
+        } else {
+          // Kolom fleksibel seperti NISN, Username, Password, Tanggal Lahir, Jenis Kelamin, Email
+          sisaKolomBiodata.push(c);
+        }
+      }
+
+      // Alokasikan sisa kolom biodata ke slot D, E, F
+      if (sisaKolomBiodata.length > 0) map.kolomD = sisaKolomBiodata[0];
+      if (sisaKolomBiodata.length > 1) map.kolomE = sisaKolomBiodata[1];
+      if (sisaKolomBiodata.length > 2) map.kolomF = sisaKolomBiodata[2];
+
+      // Fallback jika pengguna menulis header tanpa kata kunci standar
+      if (map.noPeserta === -1 && hRow[1]) map.noPeserta = 1;
+      if (map.nama === -1 && hRow[2]) map.nama = 2;
+
+      return map;
+    }
+
     function prosesImporExcel() {
       var fileInput = document.getElementById('inp-excel-file');
       if (!fileInput.files.length) { alert("Pilih file Excel terlebih dahulu!"); return; }
@@ -1340,27 +1431,32 @@
           var data = new Uint8Array(e.target.result);
           var workbook = XLSX.read(data, {type: 'array'});
           var sheetName = workbook.SheetNames[0];
-          var json = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {header: 1});
+          var json = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {header: 1, raw: false});
 
-          if (json.length > 0 && json[0]) {
-            var hRow = json[0];
-            headerKartu = {
-              noPeserta: hRow[1] ? String(hRow[1]).trim() : "No. Peserta",
-              nama:      hRow[2] ? String(hRow[2]).trim() : "Nama Peserta",
-              kolomD:    hRow[3] ? String(hRow[3]).trim() : "NISN",
-              kolomE:    hRow[4] ? String(hRow[4]).trim() : "Tgl Lahir",
-              kolomF:    hRow[5] ? String(hRow[5]).trim() : "JK",
-              kolomG:    hRow[6] ? String(hRow[6]).trim() : "Kelas",
-              token:     hRow[7] ? String(hRow[7]).trim() : "Token",
-              mapel:     hRow[8] ? String(hRow[8]).trim() : "Mata Pelajaran"
-            };
-            safeStore.set('portal_header_kartu', JSON.stringify(headerKartu));
-          }
+          var hRow = (json.length > 0 && json[0]) ? json[0] : [];
+          var colMap = deteksiPetaKolomExcel(hRow);
+
+          headerKartu = {
+            noPeserta: (colMap.noPeserta !== -1 && hRow[colMap.noPeserta]) ? String(hRow[colMap.noPeserta]).trim() : "No. Peserta",
+            nama:      (colMap.nama !== -1 && hRow[colMap.nama]) ? String(hRow[colMap.nama]).trim() : "Nama Peserta",
+            kolomD:    (colMap.kolomD !== -1 && hRow[colMap.kolomD]) ? String(hRow[colMap.kolomD]).trim() : "",
+            kolomE:    (colMap.kolomE !== -1 && hRow[colMap.kolomE]) ? String(hRow[colMap.kolomE]).trim() : "",
+            kolomF:    (colMap.kolomF !== -1 && hRow[colMap.kolomF]) ? String(hRow[colMap.kolomF]).trim() : "",
+            kolomG:    (colMap.kelas !== -1 && hRow[colMap.kelas]) ? String(hRow[colMap.kelas]).trim() : "",
+            token:     (colMap.token !== -1 && hRow[colMap.token]) ? String(hRow[colMap.token]).trim() : "Token",
+            mapel:     (colMap.mapel !== -1 && hRow[colMap.mapel]) ? String(hRow[colMap.mapel]).trim() : "",
+            adaMapel:  (colMap.mapel !== -1)
+          };
+          safeStore.set('portal_header_kartu', JSON.stringify(headerKartu));
 
           var barisValid = [];
           for (var r = 1; r < json.length; r++) {
-            if (json[r] && (json[r][1] || json[r][2])) {
-              barisValid.push(json[r]);
+            var row = json[r];
+            if (!row) continue;
+            var cekNama = (colMap.nama !== -1 && row[colMap.nama]) ? String(row[colMap.nama]).trim() : "";
+            var cekNoPes = (colMap.noPeserta !== -1 && row[colMap.noPeserta]) ? String(row[colMap.noPeserta]).trim() : "";
+            if (cekNama !== "" || cekNoPes !== "") {
+              barisValid.push(row);
             }
           }
 
@@ -1380,15 +1476,15 @@
             for (var i = indexSekarang; i < batas; i++) {
               var row = barisValid[i];
               siswaBaru.push({
-                no: row[0] || (i + 1),
-                noPeserta: row[1] ? String(row[1]).trim() : 'A-' + String(i + 1).padStart(3, '0'),
-                nama:      row[2] ? String(row[2]).trim() : 'Tanpa Nama',
-                nisn:      row[3] ? String(row[3]).trim() : '-',
-                tglLahir:  row[4] ? String(row[4]).trim() : '-',
-                gender:    row[5] ? String(row[5]).trim() : '-',
-                kelas:     row[6] ? String(row[6]).trim() : 'Semua',
-                token:     row[7] ? String(row[7]).trim() : '',
-                mapel:     row[8] ? String(row[8]).trim() : '-'
+                no:        (colMap.no !== -1 && row[colMap.no]) ? row[colMap.no] : (i + 1),
+                noPeserta: (colMap.noPeserta !== -1 && row[colMap.noPeserta]) ? String(row[colMap.noPeserta]).trim() : 'A-' + String(i + 1).padStart(3, '0'),
+                nama:      (colMap.nama !== -1 && row[colMap.nama]) ? String(row[colMap.nama]).trim() : 'Tanpa Nama',
+                nisn:      (colMap.kolomD !== -1 && row[colMap.kolomD]) ? String(row[colMap.kolomD]).trim() : '',
+                tglLahir:  (colMap.kolomE !== -1 && row[colMap.kolomE]) ? String(row[colMap.kolomE]).trim() : '',
+                gender:    (colMap.kolomF !== -1 && row[colMap.kolomF]) ? String(row[colMap.kolomF]).trim() : '',
+                kelas:     (colMap.kelas !== -1 && row[colMap.kelas]) ? String(row[colMap.kelas]).trim() : '',
+                token:     (colMap.token !== -1 && row[colMap.token]) ? String(row[colMap.token]).trim() : '',
+                mapel:     (colMap.mapel !== -1 && row[colMap.mapel]) ? String(row[colMap.mapel]).trim() : ''
               });
             }
 
@@ -1408,7 +1504,8 @@
 
                 var selectKelas = document.getElementById('filter-kelas');
                 var kelasDariExcel = [...new Set(siswaBaru.map(function(s){ return s.kelas; }).filter(function(k){ return k && k.trim() !== ''; }))];
-                selectKelas.innerHTML = '<option value="SEMUA" selected>Semua (' + headerKartu.kolomG + ')</option>';
+                var labelFilterKelas = headerKartu.kolomG || 'Kelas';
+                selectKelas.innerHTML = '<option value="SEMUA" selected>Semua (' + labelFilterKelas + ')</option>';
                 kelasDariExcel.forEach(function(k){ selectKelas.innerHTML += '<option value="' + k + '">' + k + '</option>'; });
 
                 inisialisasiDropdownSiswa();
@@ -1462,7 +1559,7 @@
       renderSemuaKartu();
     }
 
-    // UPLOAD STEMPEL DIGITAL (MENIMPA TTD)
+    // UPLOAD STEMPEL DIGITAL
     document.getElementById('inp-stempel-lembaga').addEventListener('change', function(e) {
       var file = e.target.files[0];
       if (file) {
@@ -1665,10 +1762,20 @@
 
       var jabatanText = MAP_JENJANG[jenjangAktif].jabatan;
 
+      // RAKIT LABEL BARIS BIODATA SECARA DINAMIS (HANYA MENAMPILKAN YANG ADA DI EXCEL)
       var lblBaris1 = headerKartu.noPeserta || 'No. Peserta';
       var lblBaris2 = headerKartu.nama || 'Nama Peserta';
-      var lblBaris3 = (headerKartu.kolomD || 'NISN') + ' / ' + (headerKartu.kolomF || 'JK');
-      var lblBaris4 = (headerKartu.kolomE || 'Tgl Lahir') + ' / ' + (headerKartu.kolomG || 'Kelas');
+
+      var arrLbl3 = [];
+      if (headerKartu.kolomD) arrLbl3.push(headerKartu.kolomD);
+      if (headerKartu.kolomF) arrLbl3.push(headerKartu.kolomF);
+      var lblBaris3 = arrLbl3.join(' / ');
+
+      var arrLbl4 = [];
+      if (headerKartu.kolomE) arrLbl4.push(headerKartu.kolomE);
+      if (headerKartu.kolomG) arrLbl4.push(headerKartu.kolomG);
+      var lblBaris4 = arrLbl4.join(' / ');
+
       var lblToken  = headerKartu.token || 'Token';
       var lblMapel  = headerKartu.mapel || 'Mata Pelajaran';
 
@@ -1709,6 +1816,22 @@
           var ttdImgHtml = ttdDigitalSrc ? '<img src="' + ttdDigitalSrc + '" class="ttd-img-overlay" alt="TTD">' : '';
           var stempelImgHtml = stempelDigitalSrc ? '<img src="' + stempelDigitalSrc + '" class="stempel-img-overlay" alt="Stempel">' : '';
 
+          var row3Html = '';
+          if (lblBaris3) {
+            var arrVal3 = [];
+            if (headerKartu.kolomD) arrVal3.push(s.nisn || '-');
+            if (headerKartu.kolomF) arrVal3.push(s.gender || '-');
+            row3Html = '<tr><td class="lbl">' + lblBaris3 + '</td><td class="titik">:</td><td class="val">' + arrVal3.join(' / ') + '</td></tr>';
+          }
+
+          var row4Html = '';
+          if (lblBaris4) {
+            var arrVal4 = [];
+            if (headerKartu.kolomE) arrVal4.push(s.tglLahir || '-');
+            if (headerKartu.kolomG) arrVal4.push(s.kelas || '-');
+            row4Html = '<tr><td class="lbl">' + lblBaris4 + '</td><td class="titik">:</td><td class="val text-truncate" style="max-width: 55mm;">' + arrVal4.join(' / ') + '</td></tr>';
+          }
+
           var rowTokenHtml = '';
           if (opsiToken === 'dari_data') {
             var tokenVal = s.token ? s.token : '-';
@@ -1716,6 +1839,11 @@
           } else if (opsiToken === 'seragam') {
             var tokenVal = tokenSeragam ? tokenSeragam : '-';
             rowTokenHtml = '<tr><td class="lbl">' + lblToken + '</td><td class="titik">:</td><td class="val"><span class="token-badge">' + tokenVal + '</span></td></tr>';
+          }
+
+          var rowMapelHtml = '';
+          if (headerKartu.adaMapel !== false && s.mapel) {
+            rowMapelHtml = '<tr><td class="lbl">' + lblMapel + '</td><td class="titik">:</td><td class="val text-truncate" style="max-width: 55mm;">' + s.mapel + '</td></tr>';
           }
 
           lembar.innerHTML += `
@@ -1744,19 +1872,10 @@
                       <td class="lbl">${lblBaris2}</td><td class="titik">:</td>
                       <td class="val text-truncate" style="max-width: 55mm;">${s.nama}</td>
                     </tr>
-                    <tr>
-                      <td class="lbl">${lblBaris3}</td><td class="titik">:</td>
-                      <td class="val">${s.nisn || '-'} / ${s.gender || '-'}</td>
-                    </tr>
-                    <tr>
-                      <td class="lbl">${lblBaris4}</td><td class="titik">:</td>
-                      <td class="val text-truncate" style="max-width: 55mm;">${s.tglLahir || '-'} / ${s.kelas || '-'}</td>
-                    </tr>
+                    ${row3Html}
+                    ${row4Html}
                     ${rowTokenHtml}
-                    <tr>
-                      <td class="lbl">${lblMapel}</td><td class="titik">:</td>
-                      <td class="val text-truncate" style="max-width: 55mm;">${s.mapel || '-'}</td>
-                    </tr>
+                    ${rowMapelHtml}
                   </table>
                 </div>
 
@@ -1783,6 +1902,7 @@
     }
 
     window.addEventListener('DOMContentLoaded', function() {
+      ubahSkalaFont(fontScalePersen);
       periksaSesiLogin();
       gantiJenjang("MI");
     });
